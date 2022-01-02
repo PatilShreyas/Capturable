@@ -26,8 +26,6 @@ jobs:
 
       - name: Grant Permission to Execute
         run: chmod +x gradlew
-        working-directory: noty-android
 
       - name: 🏗 Build with Gradle 🛠️
         run: ./gradlew build --stacktrace
-        working-directory: noty-android
