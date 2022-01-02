@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
-    id 'org.jetbrains.dokka' version "$kotlinVersion"
+    id 'org.jetbrains.dokka'
 }
 
 android {
@@ -10,8 +10,8 @@ android {
     defaultConfig {
         minSdk 21
         targetSdk 31
-        versionCode 1
-        versionName "1.0"
+        versionCode VERSION_CODE.toInteger()
+        versionName VERSION_NAME
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -35,6 +35,7 @@ android {
     }
 
     buildFeatures {
+        buildConfig false
         compose true
     }
 
@@ -74,7 +75,7 @@ dependencies {
     dokkaHtmlPlugin "org.jetbrains.dokka:kotlin-as-java-plugin:$kotlinVersion"
 }
 
-tasks.named("dokkaHtml") {
+dokkaHtml.configure {
     outputDirectory.set(rootProject.mkdir("docs"))
 
     dokkaSourceSets {
@@ -83,3 +84,5 @@ tasks.named("dokkaHtml") {
         }
     }
 }
+
+apply plugin: 'com.vanniktech.maven.publish'
