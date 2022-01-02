@@ -47,11 +47,6 @@ import kotlin.coroutines.suspendCoroutine
 /**
  * A composable with [content] which supports to capture [ImageBitmap] from a [content].
  *
- * @param controller A [CaptureController] which gives control to capture the [content].
- * @param modifier The modifier to be applied to the layout.
- * @param onCaptured The callback which gives back [ImageBitmap] after composable is captured.
- * @param content Composable content to be captured.
- *
  * Example usage:
  *
  * ```
@@ -70,6 +65,11 @@ import kotlin.coroutines.suspendCoroutine
  *      captureController.capture()
  *  }) { ... }
  * ```
+ *
+ * @param controller A [CaptureController] which gives control to capture the [content].
+ * @param modifier The [Modifier] to be applied to the layout.
+ * @param onCaptured The callback which gives back [ImageBitmap] after composable is captured.
+ * @param content [Composable] content to be captured.
  */
 @Composable
 fun Capturable(

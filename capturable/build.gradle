@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
+    id 'org.jetbrains.dokka' version "$kotlinVersion"
 }
 
 android {
@@ -68,4 +69,17 @@ dependencies {
 
     // For using UI components in test
     androidTestImplementation "androidx.compose.material:material:$composeVersion"
+
+    // Dokka
+    dokkaHtmlPlugin "org.jetbrains.dokka:kotlin-as-java-plugin:$kotlinVersion"
+}
+
+tasks.named("dokkaHtml") {
+    outputDirectory.set(rootProject.mkdir("docs"))
+
+    dokkaSourceSets {
+        named("main") {
+            noAndroidSdkLink.set(false)
+        }
+    }
 }
