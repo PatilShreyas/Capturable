@@ -70,9 +70,6 @@ dependencies {
 
     // For using UI components in test
     androidTestImplementation "androidx.compose.material:material:$composeVersion"
-
-    // Dokka
-    dokkaHtmlPlugin "org.jetbrains.dokka:kotlin-as-java-plugin:$kotlinVersion"
 }
 
 dokkaHtml.configure {
