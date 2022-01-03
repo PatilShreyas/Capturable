@@ -25,7 +25,6 @@
 package dev.shreyaspatil.capturable
 
 import android.graphics.Bitmap
-import android.util.Log
 import android.view.View
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
