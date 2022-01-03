@@ -89,7 +89,15 @@ Button(onClick = { captureController.capture() }) { ... }
 
 On calling this method, request for capturing the content will be sent and event will be received in callback `onCaptured` with `ImageBitmap` as a parameter in the `Capturable` function.
 
-_Make sure to call this method as a part of **callback function** and **not as a part of the Composable function itself**. Otherwise, it'll lead to capture bitmaps unnecessarily in recompositions which can degrade the performance of the application._
+By default, it captures the Bitmap using [`Bitmap.Config`](https://developer.android.com/reference/android/graphics/Bitmap.Config) **ARGB_8888**. If you want to modify, you can provide config from [`Bitmap.Config` enum](https://developer.android.com/reference/android/graphics/Bitmap.Config).
+
+Example:
+
+```kotlin
+captureController.capture(Bitmap.Config.ALPHA_8)
+```
+
+> _Make sure to call this method as a part of **callback function** and **not as a part of the Composable function itself**. Otherwise, it'll lead to capture bitmaps unnecessarily in recompositions which can degrade the performance of the application._
 
 That's all needed!
 
