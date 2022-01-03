@@ -2,8 +2,17 @@
 
 ![Capturable](art/header.png)
 
-🚀A Jetpack Compose utility library for converting Composable content into Bitmap image 🖼️📸.  
+🚀A Jetpack Compose utility library for converting Composable content into Bitmap image 🖼️.  
 _Made with ❤️ for Android Developers and Composers_ 
+
+[![Build](https://github.com/PatilShreyas/Capturable/actions/workflows/build.yml/badge.svg)](https://github.com/PatilShreyas/Capturable/actions/workflows/build.yml)
+[![Maven Central](https://img.shields.io/maven-central/v/dev.shreyaspatil/capturable)](https://search.maven.org/artifact/dev.shreyaspatil/capturable)
+
+[![Github Followers](https://img.shields.io/github/followers/PatilShreyas?label=Follow&style=social)](https://github.com/PatilShreyas)
+[![GitHub stars](https://img.shields.io/github/stars/PatilShreyas/Capturable?style=social)](https://github.com/PatilShreyas/Capturable/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/PatilShreyas/Capturable?style=social)](https://github.com/PatilShreyas/Capturable/network/members)
+[![GitHub watchers](https://img.shields.io/github/watchers/PatilShreyas/Capturable?style=social)](https://github.com/PatilShreyas/Capturable/watchers)
+[![Twitter Follow](https://img.shields.io/twitter/follow/imShreyasPatil?label=Follow&style=social)](https://twitter.com/imShreyasPatil)
 
 ## 💡Introduction 
 
@@ -80,7 +89,15 @@ Button(onClick = { captureController.capture() }) { ... }
 
 On calling this method, request for capturing the content will be sent and event will be received in callback `onCaptured` with `ImageBitmap` as a parameter in the `Capturable` function.
 
-_Make sure to call this method as a part of **callback function** and **not as a part of the Composable function itself**. Otherwise, it'll lead to capture bitmaps unnecessarily in recompositions which can degrade the performance of the application._
+By default, it captures the Bitmap using [`Bitmap.Config`](https://developer.android.com/reference/android/graphics/Bitmap.Config) **ARGB_8888**. If you want to modify, you can provide config from [`Bitmap.Config` enum](https://developer.android.com/reference/android/graphics/Bitmap.Config).
+
+Example:
+
+```kotlin
+captureController.capture(Bitmap.Config.ALPHA_8)
+```
+
+> _Make sure to call this method as a part of **callback function** and **not as a part of the Composable function itself**. Otherwise, it'll lead to capture bitmaps unnecessarily in recompositions which can degrade the performance of the application._
 
 That's all needed!
 
