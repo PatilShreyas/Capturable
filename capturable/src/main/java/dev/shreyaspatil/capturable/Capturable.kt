@@ -69,13 +69,14 @@ import kotlin.coroutines.suspendCoroutine
  * @param controller A [CaptureController] which gives control to capture the [content].
  * @param modifier The [Modifier] to be applied to the layout.
  * @param onCaptured The callback which gives back [ImageBitmap] after composable is captured.
+ * If any error is occurred while capturing bitmap, [Throwable] is provided.
  * @param content [Composable] content to be captured.
  */
 @Composable
 fun Capturable(
     controller: CaptureController,
     modifier: Modifier = Modifier,
-    onCaptured: (ImageBitmap) -> Unit,
+    onCaptured: (ImageBitmap?, Throwable?) -> Unit,
     content: @Composable () -> Unit
 ) {
     AndroidView(
@@ -89,7 +90,7 @@ fun Capturable(
  */
 private inline fun ComposeView.applyCapturability(
     controller: CaptureController,
-    noinline onCaptured: (ImageBitmap) -> Unit,
+    noinline onCaptured: (ImageBitmap?, Throwable?) -> Unit,
     crossinline content: @Composable () -> Unit
 ) = apply {
     setContent {
@@ -97,8 +98,8 @@ private inline fun ComposeView.applyCapturability(
         LaunchedEffect(controller, onCaptured) {
             controller.captureRequests
                 .mapNotNull { config -> drawToBitmapPostLaidOut(config) }
-                .onEach { bitmap -> onCaptured(bitmap.asImageBitmap()) }
-                .catch { Log.e("Capturable", "Failed to capture composable", it) }
+                .onEach { bitmap -> onCaptured(bitmap.asImageBitmap(), null) }
+                .catch { error -> onCaptured(null, error) }
                 .launchIn(this)
         }
     }
