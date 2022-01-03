@@ -2,8 +2,17 @@
 
 ![Capturable](art/header.png)
 
-🚀A Jetpack Compose utility library for converting Composable content into Bitmap image 🖼️📸.  
+🚀A Jetpack Compose utility library for converting Composable content into Bitmap image 🖼️.  
 _Made with ❤️ for Android Developers and Composers_ 
+
+[![Build](https://github.com/PatilShreyas/Capturable/actions/workflows/build.yml/badge.svg)](https://github.com/PatilShreyas/Capturable/actions/workflows/build.yml)
+[![Maven Central](https://img.shields.io/maven-central/v/dev.shreyaspatil/capturable)](https://search.maven.org/artifact/dev.shreyaspatil/capturable)
+
+[![Github Followers](https://img.shields.io/github/followers/PatilShreyas?label=Follow&style=social)](https://github.com/PatilShreyas)
+[![GitHub stars](https://img.shields.io/github/stars/PatilShreyas/Capturable?style=social)](https://github.com/PatilShreyas/Capturable/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/PatilShreyas/Capturable?style=social)](https://github.com/PatilShreyas/Capturable/network/members)
+[![GitHub watchers](https://img.shields.io/github/watchers/PatilShreyas/Capturable?style=social)](https://github.com/PatilShreyas/Capturable/watchers)
+[![Twitter Follow](https://img.shields.io/twitter/follow/imShreyasPatil?label=Follow&style=social)](https://twitter.com/imShreyasPatil)
 
 ## 💡Introduction 
 
