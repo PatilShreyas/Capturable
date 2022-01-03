@@ -20,7 +20,7 @@ In `build.gradle` of app module, include this dependency
 
 ```gradle
 dependencies {
-    implementation "dev.shreyaspatil:capturable:1.0.0"
+    implementation "dev.shreyaspatil:capturable:1.0.1"
 }
 ```
 
@@ -52,9 +52,15 @@ fun TicketScreen() {
     
     Capturable(
         controller = captureController,
-        onCaptured = { bitmap ->
+        onCaptured = { bitmap, error ->
            // This is captured bitmap of a content inside Capturable Composable.
-           // Do something with [bitmap]
+           if (bitmap != null) {
+               // Bitmap is captured successfully. Do something with it!
+           }
+            
+            if (error != null) {
+                // Error occurred. Handle it!
+            }
         }
     ) {
         // Composable content to be captured.
