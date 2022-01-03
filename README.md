@@ -48,7 +48,7 @@ fun TicketScreen() {
 }
 ```
 
-_`rememberCaptureController()` is a Composable function._
+_[`rememberCaptureController()`](https://patilshreyas.github.io/Capturable/capturable/dev.shreyaspatil.capturable.controller/remember-capture-controller.html) is a Composable function._
 
 #### 2. Add the content
 
