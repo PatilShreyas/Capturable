@@ -51,7 +51,7 @@ class CapturableTest {
         composeTestRule.setContent {
             Capturable(
                 controller = controller,
-                onCaptured = { bitmaps.add(it) }
+                onCaptured = { bitmap, _ -> bitmaps.add(bitmap!!) }
             ) {
                 Box(Modifier.size(contentWidth, contentHeight)) {
                     Text("Hello! Inside Capturable")
@@ -61,6 +61,9 @@ class CapturableTest {
 
         // When: Content is captured
         controller.capture()
+
+        // Wait for some time to get a callback
+        Thread.sleep(500)
 
         // Then: Content should be get captured ONLY ONCE and stored as bitmap
         assert(bitmaps.size == 1)
