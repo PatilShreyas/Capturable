@@ -1,0 +1,67 @@
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      versionName:
+        description: 'Version Name'
+        required: true
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+
+      - name: Grant Permission to Execute Gradle
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build
+
+      - name: Publish Library
+        run: |
+          echo "Publishing library🚀"
+          ./gradlew publish --no-daemon --no-parallel
+          echo "Published✅"
+
+          echo "Releasing repository...🚀"
+          ./gradlew closeAndReleaseRepository
+          echo "Released✅"
+        env:
+          ORG_GRADLE_PROJECT_VERSION_NAME: ${{ github.event.inputs.versionName }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.GPG_PASSWORD }}
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+
+      - name: Create and push tag
+        run: |
+          git config --global user.email "shreyaspatilg@gmail.com"
+          git config --global user.name "$GITHUB_ACTOR"
+
+          git tag -a $TAG -m "Release $TAG"
+          git push origin $TAG
+        env:
+          TAG: v${{ github.event.inputs.versionName }}
+
+      - name: Create Release on GitHub
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.event.inputs.versionName }}
+          release_name: Capturable v${{ github.event.inputs.versionName }}
+          draft: true
+          prerelease: false
