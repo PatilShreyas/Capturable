@@ -24,24 +24,35 @@
 */
 package dev.shreyaspatil.capturable
 
+import android.app.Activity
+import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Rect
+import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import android.view.PixelCopy
 import android.view.View
+import android.view.Window
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.doOnLayout
 import androidx.core.view.drawToBitmap
 import dev.shreyaspatil.capturable.controller.CaptureController
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 /**
  * A composable with [content] which supports to capture [ImageBitmap] from a [content].
@@ -52,8 +63,9 @@ import kotlin.coroutines.suspendCoroutine
  *  val captureController = rememberCaptureController()
  *  Capturable(
  *      controller = captureController,
- *      onCaptured = { bitmap ->
+ *      onCaptured = { bitmap, error ->
  *          // Do something with [bitmap]
+ *          // Handle [error] if required
  *      }
  *  ) {
  *      // Composable content
