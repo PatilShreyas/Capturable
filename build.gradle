@@ -8,7 +8,7 @@ buildscript {
         composeVersion = '1.0.5'
         jUnitVersion = '4.13.2'
         androidJUnitTestVersion = '1.1.3'
-        spotlessVersion = '6.2.0'
+        spotlessVersion = '6.2.1'
         mavenPublishVersion = '0.18.0'
     }
     repositories {
