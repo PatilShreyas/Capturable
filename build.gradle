@@ -3,7 +3,7 @@ buildscript {
     ext {
         agpVersion = '7.0.4'
         kotlinVersion = '1.5.31'
-        coroutinesVersion = '1.5.2'
+        coroutinesVersion = '1.6.0'
         androidCoreVersion = '1.7.0'
         composeVersion = '1.0.5'
         jUnitVersion = '4.13.2'
