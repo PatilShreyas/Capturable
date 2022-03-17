@@ -26,6 +26,7 @@ package dev.shreyaspatil.capturable
 
 import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.graphics.Bitmap
 import android.graphics.Rect
 import android.os.Build
@@ -129,8 +130,7 @@ private suspend fun View.drawToBitmapPostLaidOut(context: Context, config: Bitma
             // "Software rendering doesn't support hardware bitmaps"
             // See this issue for the reference: https://github.com/PatilShreyas/Capturable/issues/7
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val window = (context as? Activity)?.window
-                    ?: error("Can't get window from the Context")
+                val window = context.findActivity().window
 
                 drawBitmapWithPixelCopy(
                     view = view,
@@ -179,4 +179,16 @@ private fun drawBitmapWithPixelCopy(
         },
         Handler(Looper.getMainLooper())
     )
+}
+
+/**
+ * Traverses through this [Context] and finds [Activity] wrapped inside it.
+ */
+internal fun Context.findActivity(): Activity {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is Activity) return context
+        context = context.baseContext
+    }
+    throw IllegalStateException("Unable to retrieve Activity from the current context")
 }
