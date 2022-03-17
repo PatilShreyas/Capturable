@@ -47,13 +47,13 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.doOnLayout
 import androidx.core.view.drawToBitmap
 import dev.shreyaspatil.capturable.controller.CaptureController
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 /**
  * A composable with [content] which supports to capture [ImageBitmap] from a [content].
@@ -125,22 +125,28 @@ private inline fun ComposeView.applyCapturability(
 private suspend fun View.drawToBitmapPostLaidOut(context: Context, config: Bitmap.Config): Bitmap {
     return suspendCoroutine { continuation ->
         doOnLayout { view ->
-            // For device with API version O(26) and above should draw Bitmap using PixelCopy API.
-            // The reason behind this is it throws IllegalArgumentException saying
-            // "Software rendering doesn't support hardware bitmaps"
-            // See this issue for the reference: https://github.com/PatilShreyas/Capturable/issues/7
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val window = context.findActivity().window
-
-                drawBitmapWithPixelCopy(
-                    view = view,
-                    window = window,
-                    config = config,
-                    onDrawn = { bitmap -> continuation.resume(bitmap) },
-                    onError = { error -> continuation.resumeWithException(error) }
-                )
-            } else {
+            try {
+                // Initially, try to capture bitmap using drawToBitmap extension function
                 continuation.resume(view.drawToBitmap(config))
+            } catch (e: IllegalArgumentException) {
+                // For device with API version O(26) and above should draw Bitmap using PixelCopy
+                // API. The reason behind this is it throws IllegalArgumentException saying
+                // "Software rendering doesn't support hardware bitmaps"
+                // See this issue for the reference:
+                // https://github.com/PatilShreyas/Capturable/issues/7
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    val window = context.findActivity().window
+
+                    drawBitmapWithPixelCopy(
+                        view = view,
+                        window = window,
+                        config = config,
+                        onDrawn = { bitmap -> continuation.resume(bitmap) },
+                        onError = { error -> continuation.resumeWithException(error) }
+                    )
+                } else {
+                    continuation.resumeWithException(e)
+                }
             }
         }
     }
