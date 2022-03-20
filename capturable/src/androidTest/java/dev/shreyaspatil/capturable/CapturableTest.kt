@@ -35,6 +35,7 @@ import dev.shreyaspatil.capturable.controller.CaptureController
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
+import java.math.RoundingMode
 
 class CapturableTest {
 
@@ -71,13 +72,18 @@ class CapturableTest {
         // Then: Dimension of bitmap should be same as content's dimension
         val bitmap = bitmaps.first()
 
-        val expectedHeight = with(composeTestRule.density) { contentHeight.toPx() }
-        val expectedWidth = with(composeTestRule.density) { contentWidth.toPx() }
+        val expectedHeight = with(composeTestRule.density) { contentHeight.toPx() }.roundToInt()
+        val expectedWidth = with(composeTestRule.density) { contentWidth.toPx() }.roundToInt()
 
-        val actualHeight = bitmap.height.toFloat()
-        val actualWidth = bitmap.width.toFloat()
+        val actualHeight = bitmap.height
+        val actualWidth = bitmap.width
 
-        assertEquals(actualHeight, expectedHeight)
-        assertEquals(actualWidth, expectedWidth)
+        assertEquals(expectedHeight, actualHeight)
+        assertEquals(expectedWidth, actualWidth)
     }
+
+    /**
+     * Converts float value to the integer value by rounding up to ceiling.
+     */
+    private fun Float.roundToInt(): Int = toBigDecimal().setScale(0, RoundingMode.CEILING).toInt()
 }

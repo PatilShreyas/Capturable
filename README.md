@@ -29,7 +29,7 @@ In `build.gradle` of app module, include this dependency
 
 ```gradle
 dependencies {
-    implementation "dev.shreyaspatil:capturable:1.0.2"
+    implementation "dev.shreyaspatil:capturable:1.0.3"
 }
 ```
 
@@ -100,6 +100,10 @@ captureController.capture(Bitmap.Config.ALPHA_8)
 > _Make sure to call this method as a part of **callback function** and **not as a part of the Composable function itself**. Otherwise, it'll lead to capture bitmaps unnecessarily in recompositions which can degrade the performance of the application._
 
 That's all needed!
+
+#### ⚠️ Precaution
+
+While capturing the content on the devices having Android OS **version O and above (API 26+)** and having network images like Coil, Picasso, Glide, etc it may throw error like `java.lang.IllegalArgumentException: Software rendering doesn't support hardware bitmaps`. To overcome such issues, this library uses [`PixelCopy`](https://developer.android.com/reference/android/view/PixelCopy) API to capture Bitmap as a fallback mechanism. `PixelCopy` has some limitations such as it can't generate bitmap if composable content is clipped inside app's Window, beyond or above screen i.e. due to scrolling, etc. So make sure not to include any UI content inside `Composable` which uses hardware bitmaps.
 
 ## 📄 API Documentation
 
