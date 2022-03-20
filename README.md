@@ -101,6 +101,10 @@ captureController.capture(Bitmap.Config.ALPHA_8)
 
 That's all needed!
 
+#### ⚠️ Precaution
+
+While capturing the content on the devices having Android OS **version O and above (API 26+)** and having network images like Coil, Picasso, Glide, etc it may throw error like `java.lang.IllegalArgumentException: Software rendering doesn't support hardware bitmaps`. To overcome such issues, this library uses [`PixelCopy`](https://developer.android.com/reference/android/view/PixelCopy) API to capture Bitmap as a fallback mechanism. `PixelCopy` has some limitations such as it can't generate bitmap if composable content is clipped inside app's Window, beyond or above screen i.e. due to scrolling, etc. So make sure not to include any UI content inside `Composable` which uses hardware bitmaps.
+
 ## 📄 API Documentation
 
 [**Visit the API documentation of this library**](https://patilshreyas.github.io/Capturable) to get more information in detail.
