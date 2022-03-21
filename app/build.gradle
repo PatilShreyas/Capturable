@@ -49,7 +49,7 @@ android {
 dependencies {
 
     // Capturable library
-    implementation "dev.shreyaspatil:capturable:1.0.2"
+    implementation "dev.shreyaspatil:capturable:1.0.3"
 
     // Android
     implementation 'androidx.core:core-ktx:1.7.0'
