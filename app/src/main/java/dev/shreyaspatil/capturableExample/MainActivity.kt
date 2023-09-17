@@ -90,7 +90,7 @@ fun TicketScreen() {
     ) {
         Capturable(
             controller = controller,
-            onCaptured = { bitmap, error -> ticketBitmap = bitmap }
+            onCaptured = { bitmap, _ -> ticketBitmap = bitmap }
         ) {
             Ticket()
         }

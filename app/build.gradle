@@ -4,12 +4,12 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk 34
 
     defaultConfig {
         applicationId "dev.shreyaspatil.capturableExample"
         minSdk 21
-        targetSdk 31
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -31,19 +31,19 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
-        useIR = true
     }
     buildFeatures {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion composeVersion
+        kotlinCompilerExtensionVersion composeCompilerVersion
     }
     packagingOptions {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+    namespace 'dev.shreyaspatil.capturableExample'
 }
 
 dependencies {
@@ -52,15 +52,17 @@ dependencies {
     implementation "dev.shreyaspatil:capturable:1.0.3"
 
     // Android
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.4.0'
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.0'
-    implementation 'androidx.activity:activity-compose:1.4.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.2'
+    implementation 'androidx.activity:activity-compose:1.7.2'
 
     // Jetpack Compose
-    implementation "androidx.compose.ui:ui:$composeVersion"
-    implementation "androidx.compose.material:material:$composeVersion"
-    implementation "androidx.compose.ui:ui-tooling-preview:$composeVersion"
-    debugImplementation "androidx.compose.ui:ui-tooling:$composeVersion"
+    implementation platform("androidx.compose:compose-bom:$composeBomVersion")
+    implementation "androidx.compose.foundation:foundation"
+    implementation "androidx.compose.ui:ui"
+    implementation "androidx.compose.material:material"
+    implementation "androidx.compose.ui:ui-tooling-preview"
+    debugImplementation "androidx.compose.ui:ui-tooling"
 }
