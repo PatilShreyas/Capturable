@@ -44,11 +44,14 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ExperimentalComposeApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.painterResource
@@ -56,11 +59,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import dev.shreyaspatil.capturable.Capturable
+import dev.shreyaspatil.capturable.capturable
 import dev.shreyaspatil.capturable.controller.rememberCaptureController
 import dev.shreyaspatil.capturableExample.ui.theme.CapturableExampleTheme
 import dev.shreyaspatil.capturableExample.ui.theme.LightGray
 import dev.shreyaspatil.capturableExample.ui.theme.Teal200
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,9 +79,11 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalComposeApi::class)
 @Composable
 fun TicketScreen() {
-    val controller = rememberCaptureController()
+    val captureController = rememberCaptureController()
+    val uiScope = rememberCoroutineScope()
 
     // This will hold captured bitmap
     // So that we can demo it
@@ -88,18 +94,18 @@ fun TicketScreen() {
         modifier = Modifier
             .padding(24.dp),
     ) {
-        Capturable(
-            controller = controller,
-            onCaptured = { bitmap, _ -> ticketBitmap = bitmap }
-        ) {
-            Ticket()
-        }
+        // The content to be captured ⬇️
+        Ticket(modifier = Modifier.capturable(captureController))
 
         Spacer(modifier = Modifier.size(32.dp))
 
         // Captures ticket bitmap on click
         Button(
-            onClick = { controller.capture() }
+            onClick = {
+                uiScope.launch {
+                    ticketBitmap = captureController.captureAsync().await()
+                }
+            }
         ) {
             Text("Preview Ticket Image")
         }
@@ -130,8 +136,8 @@ fun TicketScreen() {
 }
 
 @Composable
-fun Ticket() {
-    Card {
+fun Ticket(modifier: Modifier) {
+    Card(modifier = modifier) {
         Column(
             Modifier
                 .fillMaxWidth()
