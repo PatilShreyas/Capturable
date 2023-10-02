@@ -58,7 +58,7 @@ class CaptureController internal constructor() {
     @OptIn(ExperimentalComposeApi::class)
     @Deprecated(
         message = "This method has been deprecated and will be removed in the upcoming releases. " +
-                "Use `captureAsync()` instead",
+            "Use `captureAsync()` instead",
         replaceWith = ReplaceWith("captureAsync(config)"),
         level = DeprecationLevel.WARNING
     )

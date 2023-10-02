@@ -83,7 +83,7 @@ import kotlinx.coroutines.withContext
 @OptIn(ExperimentalComposeUiApi::class)
 @Deprecated(
     "This Composable method has been deprecated & will be removed in the future releases. " +
-            "Use Modifier `capturable()` directly.",
+        "Use Modifier `capturable()` directly.",
     level = DeprecationLevel.WARNING
 )
 @Composable
@@ -176,23 +176,25 @@ private class CapturableModifierNode(
      * Delegates the drawing to [CacheDrawModifierNode] in order to draw content rendered on the
      * canvas directly to the [picture].
      */
-    val drawModifierNode = delegate(CacheDrawModifierNode {
-        // Example that shows how to redirect rendering to an Android Picture and then
-        // draw the picture into the original destination
-        val width = this.size.width.toInt()
-        val height = this.size.height.toInt()
+    val drawModifierNode = delegate(
+        CacheDrawModifierNode {
+            // Example that shows how to redirect rendering to an Android Picture and then
+            // draw the picture into the original destination
+            val width = this.size.width.toInt()
+            val height = this.size.height.toInt()
 
-        onDrawWithContent {
-            val pictureCanvas = Canvas(picture.beginRecording(width, height))
+            onDrawWithContent {
+                val pictureCanvas = Canvas(picture.beginRecording(width, height))
 
-            draw(this, this.layoutDirection, pictureCanvas, this.size) {
-                this@onDrawWithContent.drawContent()
+                draw(this, this.layoutDirection, pictureCanvas, this.size) {
+                    this@onDrawWithContent.drawContent()
+                }
+                picture.endRecording()
+
+                drawIntoCanvas { canvas -> canvas.nativeCanvas.drawPicture(picture) }
             }
-            picture.endRecording()
-
-            drawIntoCanvas { canvas -> canvas.nativeCanvas.drawPicture(picture) }
         }
-    })
+    )
 
     override fun onAttach() {
         super.onAttach()
@@ -220,9 +222,12 @@ private fun Picture.asBitmap(config: Bitmap.Config): Bitmap {
         Bitmap.createBitmap(this@asBitmap)
     } else {
         val bitmap = Bitmap.createBitmap(
-            /* width = */ this@asBitmap.width,
-            /* height = */ this@asBitmap.height,
-            /* config = */ config
+            /* width = */
+            this@asBitmap.width,
+            /* height = */
+            this@asBitmap.height,
+            /* config = */
+            config
         )
         val canvas = android.graphics.Canvas(bitmap)
         canvas.drawColor(android.graphics.Color.WHITE)
