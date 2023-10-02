@@ -24,38 +24,34 @@
 */
 package dev.shreyaspatil.capturable
 
-import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
 import android.graphics.Bitmap
-import android.graphics.Rect
+import android.graphics.Picture
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
-import android.view.PixelCopy
-import android.view.View
-import android.view.Window
-import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.CacheDrawModifierNode
+import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.view.doOnLayout
-import androidx.core.view.drawToBitmap
+import androidx.compose.ui.graphics.drawscope.draw
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.node.DelegatableNode
+import androidx.compose.ui.node.DelegatingNode
+import androidx.compose.ui.node.ModifierNodeElement
 import dev.shreyaspatil.capturable.controller.CaptureController
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.flow.onEach
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
+ * ***Deprecated: Use Modifier.[capturable] for replacement.***
+ *
  * A composable with [content] which supports to capture [ImageBitmap] from a [content].
  *
  * Example usage:
@@ -84,6 +80,12 @@ import kotlin.coroutines.suspendCoroutine
  * If any error is occurred while capturing bitmap, [Throwable] is provided.
  * @param content [Composable] content to be captured.
  */
+@OptIn(ExperimentalComposeUiApi::class)
+@Deprecated(
+    "This Composable method has been deprecated & will be removed in the future releases. " +
+            "Use Modifier `capturable()` directly.",
+    level = DeprecationLevel.ERROR
+)
 @Composable
 fun Capturable(
     controller: CaptureController,
@@ -91,61 +93,119 @@ fun Capturable(
     onCaptured: (ImageBitmap?, Throwable?) -> Unit,
     content: @Composable () -> Unit
 ) {
-    val context = LocalContext.current
-    AndroidView(
-        factory = { ComposeView(it).applyCapturability(controller, onCaptured, content, context) },
-        modifier = modifier
-    )
-}
+    val updatedOnCaptured by rememberUpdatedState(newValue = onCaptured)
 
-/**
- * Sets the [content] in [ComposeView] and handles the capture of a [content].
- */
-private inline fun ComposeView.applyCapturability(
-    controller: CaptureController,
-    noinline onCaptured: (ImageBitmap?, Throwable?) -> Unit,
-    crossinline content: @Composable () -> Unit,
-    context: Context
-) = apply {
-    setContent {
+    Column(modifier = modifier.capturable(controller)) {
         content()
-        LaunchedEffect(controller, onCaptured) {
-            controller.captureRequests
-                .mapNotNull { config -> drawToBitmapPostLaidOut(context, config) }
-                .onEach { bitmap -> onCaptured(bitmap.asImageBitmap(), null) }
-                .catch { error -> onCaptured(null, error) }
-                .launchIn(this)
+    }
+
+    LaunchedEffect(key1 = controller) {
+        controller.captureRequests.collect { request ->
+            try {
+                val imageBitmap = request.imageBitmapDeferred.await()
+                updatedOnCaptured(imageBitmap, null)
+            } catch (error: Throwable) {
+                updatedOnCaptured(null, error)
+            }
         }
     }
 }
 
 /**
- * Waits till this [View] is laid off and then draws it to the [Bitmap] with specified [config].
+ * Adds a capture-ability on the Composable which can draw Bitmap from the Composable component.
+ *
+ * Example usage:
+ *
+ * ```
+ *  val captureController = rememberCaptureController()
+ *  val uiScope = rememberCoroutineScope()
+ *
+ *  // The content to be captured in to Bitmap
+ *  Column(
+ *      modifier = Modifier.capturable(captureController),
+ *  ) {
+ *      // Composable content
+ *  }
+ *
+ *  Button(onClick = {
+ *      // Capture content
+ *      val bitmapAsync = captureController.captureAsync()
+ *      try {
+ *          val bitmap = bitmapAsync.await()
+ *          // Do something with `bitmap`.
+ *      } catch (error: Throwable) {
+ *          // Error occurred, do something.
+ *      }
+ *  }) { ... }
+ * ```
+ *
+ * @param controller A [CaptureController] which gives control to capture the Composable content.
  */
-private suspend fun View.drawToBitmapPostLaidOut(context: Context, config: Bitmap.Config): Bitmap {
-    return suspendCoroutine { continuation ->
-        doOnLayout { view ->
-            try {
-                // Initially, try to capture bitmap using drawToBitmap extension function
-                continuation.resume(view.drawToBitmap(config))
-            } catch (e: IllegalArgumentException) {
-                // For device with API version O(26) and above should draw Bitmap using PixelCopy
-                // API. The reason behind this is it throws IllegalArgumentException saying
-                // "Software rendering doesn't support hardware bitmaps"
-                // See this issue for the reference:
-                // https://github.com/PatilShreyas/Capturable/issues/7
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    val window = context.findActivity().window
+@ExperimentalComposeUiApi
+fun Modifier.capturable(controller: CaptureController): Modifier {
+    return this then CapturableModifierNodeElement(controller)
+}
 
-                    drawBitmapWithPixelCopy(
-                        view = view,
-                        window = window,
-                        config = config,
-                        onDrawn = { bitmap -> continuation.resume(bitmap) },
-                        onError = { error -> continuation.resumeWithException(error) }
-                    )
-                } else {
-                    continuation.resumeWithException(e)
+/**
+ * Modifier implementation of Capturable
+ */
+private data class CapturableModifierNodeElement(
+    private val controller: CaptureController
+) : ModifierNodeElement<CapturableModifierNode>() {
+    override fun create(): CapturableModifierNode {
+        return CapturableModifierNode(controller)
+    }
+
+    override fun update(node: CapturableModifierNode) {
+        node.controller = controller
+    }
+}
+
+/**
+ * Capturable Modifier node which delegates task to the [CacheDrawModifierNode] for drawing
+ * Composable UI to the Picture and then helping it to converting picture into a Bitmap.
+ */
+@Suppress("unused")
+private class CapturableModifierNode(
+    var controller: CaptureController
+) : DelegatingNode(), DelegatableNode {
+
+    val picture = Picture()
+
+    /**
+     * Delegates the drawing to [CacheDrawModifierNode] in order to draw content rendered on the
+     * canvas directly to the [picture].
+     */
+    val drawModifierNode = delegate(CacheDrawModifierNode {
+        // Example that shows how to redirect rendering to an Android Picture and then
+        // draw the picture into the original destination
+        val width = this.size.width.toInt()
+        val height = this.size.height.toInt()
+
+        onDrawWithContent {
+            val pictureCanvas = Canvas(picture.beginRecording(width, height))
+
+            draw(this, this.layoutDirection, pictureCanvas, this.size) {
+                this@onDrawWithContent.drawContent()
+            }
+            picture.endRecording()
+
+            drawIntoCanvas { canvas -> canvas.nativeCanvas.drawPicture(picture) }
+        }
+    })
+
+    override fun onAttach() {
+        super.onAttach()
+        coroutineScope.launch {
+            controller.captureRequests.collect { request ->
+                val completable = request.imageBitmapDeferred
+                try {
+                    val bitmap = withContext(Dispatchers.Default) {
+                        picture.asBitmap(request.config)
+                    }
+                    completable.complete(bitmap.asImageBitmap())
+                } catch (error: Throwable) {
+                    completable.completeExceptionally(error)
                 }
             }
         }
@@ -153,48 +213,20 @@ private suspend fun View.drawToBitmapPostLaidOut(context: Context, config: Bitma
 }
 
 /**
- * Draws a [view] to a [Bitmap] with [config] using a [PixelCopy] API.
- * Gives callback [onDrawn] after successfully drawing Bitmap otherwise invokes [onError].
+ * Creates a [Bitmap] from a [Picture] with provided [config]
  */
-@RequiresApi(Build.VERSION_CODES.O)
-private fun drawBitmapWithPixelCopy(
-    view: View,
-    window: Window,
-    config: Bitmap.Config,
-    onDrawn: (Bitmap) -> Unit,
-    onError: (Throwable) -> Unit
-) {
-    val width = view.width
-    val height = view.height
-
-    val bitmap = Bitmap.createBitmap(width, height, config)
-
-    val (x, y) = IntArray(2).apply { view.getLocationInWindow(this) }
-    val rect = Rect(x, y, x + width, y + height)
-
-    PixelCopy.request(
-        window,
-        rect,
-        bitmap,
-        { copyResult ->
-            if (copyResult == PixelCopy.SUCCESS) {
-                onDrawn(bitmap)
-            } else {
-                onError(RuntimeException("Failed to draw bitmap"))
-            }
-        },
-        Handler(Looper.getMainLooper())
-    )
-}
-
-/**
- * Traverses through this [Context] and finds [Activity] wrapped inside it.
- */
-internal fun Context.findActivity(): Activity {
-    var context = this
-    while (context is ContextWrapper) {
-        if (context is Activity) return context
-        context = context.baseContext
+private fun Picture.asBitmap(config: Bitmap.Config): Bitmap {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        Bitmap.createBitmap(this@asBitmap)
+    } else {
+        val bitmap = Bitmap.createBitmap(
+            /* width = */ this@asBitmap.width,
+            /* height = */ this@asBitmap.height,
+            /* config = */ config
+        )
+        val canvas = android.graphics.Canvas(bitmap)
+        canvas.drawColor(android.graphics.Color.WHITE)
+        canvas.drawPicture(this@asBitmap)
+        bitmap
     }
-    throw IllegalStateException("Unable to retrieve Activity from the current context")
 }
