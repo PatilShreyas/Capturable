@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk 34
 
     defaultConfig {
         minSdk 21
-        targetSdk 31
+        targetSdk 34
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -29,7 +29,6 @@ android {
 
     kotlinOptions {
         jvmTarget = '1.8'
-        useIR = true
     }
 
     buildFeatures {
@@ -38,7 +37,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion composeVersion
+        kotlinCompilerExtensionVersion composeCompilerVersion
     }
 
     packagingOptions {
@@ -46,6 +45,10 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+    namespace 'dev.shreyaspatil.capturable'
 }
 
 dependencies {
@@ -56,18 +59,21 @@ dependencies {
     implementation "androidx.core:core-ktx:$androidCoreVersion"
 
     // Jetpack Compose
-    implementation "androidx.compose.ui:ui:$composeVersion"
-    implementation "androidx.compose.runtime:runtime:$composeVersion"
+    def composeBom = platform("androidx.compose:compose-bom:$composeBomVersion")
+    implementation composeBom
+    implementation "androidx.compose.ui:ui"
+    implementation "androidx.compose.runtime:runtime"
 
     // Testing
     testImplementation "junit:junit:$jUnitVersion"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
+    androidTestImplementation composeBom
     androidTestImplementation "androidx.test.ext:junit:$androidJUnitTestVersion"
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$composeVersion"
-    androidTestImplementation "androidx.compose.ui:ui-test-manifest:$composeVersion"
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4"
+    androidTestImplementation "androidx.compose.ui:ui-test-manifest"
 
     // For using UI components in test
-    androidTestImplementation "androidx.compose.material:material:$composeVersion"
+    androidTestImplementation "androidx.compose.material:material"
 }
 
 dokkaHtml.configure {

@@ -48,11 +48,16 @@ private val LightColorPalette = lightColors(
     onSecondary = Color.Black,
     onBackground = Color.Black,
     onSurface = Color.Black,
-    */
+     */
 )
 
 @Composable
-fun CapturableExampleTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
+fun CapturableExampleTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content:
+    @Composable()
+    () -> Unit
+) {
     val colors = if (darkTheme) {
         DarkColorPalette
     } else {

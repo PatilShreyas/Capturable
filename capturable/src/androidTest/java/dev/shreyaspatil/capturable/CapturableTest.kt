@@ -32,10 +32,10 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.unit.dp
 import dev.shreyaspatil.capturable.controller.CaptureController
+import java.math.RoundingMode
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
-import java.math.RoundingMode
 
 class CapturableTest {
 
