@@ -10,7 +10,7 @@ buildscript {
         composeBomVersion = '2023.09.00'
         jUnitVersion = '4.13.2'
         androidJUnitTestVersion = '1.1.5'
-        spotlessVersion = '6.19.0'
+        spotlessVersion = '6.22.0'
         mavenPublishVersion = '0.25.3'
     }
     repositories {
