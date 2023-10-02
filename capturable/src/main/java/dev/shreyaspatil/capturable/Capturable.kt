@@ -84,7 +84,7 @@ import kotlinx.coroutines.withContext
 @Deprecated(
     "This Composable method has been deprecated & will be removed in the future releases. " +
             "Use Modifier `capturable()` directly.",
-    level = DeprecationLevel.ERROR
+    level = DeprecationLevel.WARNING
 )
 @Composable
 fun Capturable(
