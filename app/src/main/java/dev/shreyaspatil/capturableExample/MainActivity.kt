@@ -86,7 +86,7 @@ fun TicketScreen() {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .padding(24.dp),
+            .padding(24.dp)
     ) {
         Capturable(
             controller = controller,
@@ -117,7 +117,7 @@ fun TicketScreen() {
                     Spacer(Modifier.size(16.dp))
                     Image(
                         bitmap = bitmap,
-                        contentDescription = "Preview of ticket",
+                        contentDescription = "Preview of ticket"
                     )
                     Spacer(Modifier.size(4.dp))
                     Button(onClick = { ticketBitmap = null }) {
@@ -139,7 +139,6 @@ fun Ticket() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             BookingConfirmedContent()
             MovieTitle()
             Spacer(modifier = Modifier.size(32.dp))
