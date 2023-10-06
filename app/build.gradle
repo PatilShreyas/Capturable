@@ -49,7 +49,8 @@ android {
 dependencies {
 
     // Capturable library
-    implementation "dev.shreyaspatil:capturable:1.0.3"
+//    implementation "dev.shreyaspatil:capturable:1.0.3"
+    implementation(project(":capturable"))
 
     // Android
     implementation 'androidx.core:core-ktx:1.12.0'
@@ -59,7 +60,9 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.7.2'
 
     // Jetpack Compose
-    implementation platform("androidx.compose:compose-bom:$composeBomVersion")
+    // Currently it's using alpha version for API preview
+    // implementation platform("androidx.compose:compose-bom:$composeBomVersion")
+    implementation(platform("dev.chrisbanes.compose:compose-bom:2023.10.00-alpha01"))
     implementation "androidx.compose.foundation:foundation"
     implementation "androidx.compose.ui:ui"
     implementation "androidx.compose.material:material"

@@ -25,48 +25,59 @@
 package dev.shreyaspatil.capturable.controller
 
 import android.graphics.Bitmap
+import androidx.compose.runtime.ExperimentalComposeApi
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.take
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
+@Suppress("DeferredResultUnused")
+@OptIn(ExperimentalComposeApi::class)
 class CaptureControllerTest {
 
     private val controller = CaptureController()
 
     @Test
-    fun testCapture_withNoParameters() = runBlockingTest {
+    fun captureAsync_validConfig_withNoParameters() = runTest {
         // Before capturing, make sure to collect flow request eagerly
-        val captureRequest = async { getRecentCaptureRequest() }
+        val captureRequestDeferred = asyncOnUnconfinedDispatcher { getRecentCaptureRequest() }
 
         // When: Captured
-        controller.capture()
+        controller.captureAsync()
 
-        val actualConfig = captureRequest.await()
+        val captureRequest = captureRequestDeferred.await()
         val expectedConfig = Bitmap.Config.ARGB_8888
 
         // Then: Capture request should be get emitted with default bitmap config
-        assertEquals(actualConfig, expectedConfig)
+        assertEquals(captureRequest.config, expectedConfig)
     }
 
     @Test
-    fun testCapture_withCustomParameters() = runBlockingTest {
+    fun captureAsync_validConfig_withCustomParameters() = runTest {
         // Before capturing, make sure to collect flow request eagerly
-        val captureRequest = async { getRecentCaptureRequest() }
+        val captureRequestDeferred = asyncOnUnconfinedDispatcher { getRecentCaptureRequest() }
 
         // Given: The customized config
         val expectedConfig = Bitmap.Config.RGB_565
 
         // When: Captured
-        controller.capture(expectedConfig)
+        controller.captureAsync(expectedConfig)
 
-        val actualConfig = captureRequest.await()
+        val captureRequest = captureRequestDeferred.await()
 
         // Then: Capture request should be get emitted with default bitmap config
-        assertEquals(actualConfig, expectedConfig)
+        assertEquals(captureRequest.config, expectedConfig)
     }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun <T> TestScope.asyncOnUnconfinedDispatcher(block: suspend CoroutineScope.() -> T) =
+        async(UnconfinedTestDispatcher(testScheduler), block = block)
 
     private suspend fun getRecentCaptureRequest() = controller.captureRequests.take(1).first()
 }

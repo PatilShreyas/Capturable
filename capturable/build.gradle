@@ -59,10 +59,13 @@ dependencies {
     implementation "androidx.core:core-ktx:$androidCoreVersion"
 
     // Jetpack Compose
-    def composeBom = platform("androidx.compose:compose-bom:$composeBomVersion")
+    // Currently it's using alpha version for API preview
+    // def composeBom = platform("androidx.compose:compose-bom:$composeBomVersion")
+    def composeBom = platform("dev.chrisbanes.compose:compose-bom:2023.10.00-alpha01")
     implementation composeBom
     implementation "androidx.compose.ui:ui"
     implementation "androidx.compose.runtime:runtime"
+    implementation "androidx.compose.foundation:foundation"
 
     // Testing
     testImplementation "junit:junit:$jUnitVersion"
