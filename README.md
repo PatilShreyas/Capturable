@@ -10,8 +10,7 @@ _Made with ❤️ for Android Developers and Composers_
 
 ## 💡Introduction 
 
-In the previous View system, drawing Bitmap Image from `View` was very straightforward. But that's not the case with Jetpack Compose since it's different in many aspects from previous system. This library helps easy way to achieve the same results. 
-It's built upon the `ComposeView` and uses `View`'s APIs to draw the Bitmap image.
+In the previous View system, drawing Bitmap Image from `View` was very straightforward. But that's not the case with Jetpack Compose since it's different in many aspects from previous system. This library helps easy way to achieve the same results.
 
 ## 🚀 Implementation
 
