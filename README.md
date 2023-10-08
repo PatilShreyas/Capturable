@@ -8,12 +8,6 @@ _Made with ❤️ for Android Developers and Composers_
 [![Build](https://github.com/PatilShreyas/Capturable/actions/workflows/build.yml/badge.svg)](https://github.com/PatilShreyas/Capturable/actions/workflows/build.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/dev.shreyaspatil/capturable)](https://search.maven.org/artifact/dev.shreyaspatil/capturable)
 
-[![Github Followers](https://img.shields.io/github/followers/PatilShreyas?label=Follow&style=social)](https://github.com/PatilShreyas)
-[![GitHub stars](https://img.shields.io/github/stars/PatilShreyas/Capturable?style=social)](https://github.com/PatilShreyas/Capturable/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/PatilShreyas/Capturable?style=social)](https://github.com/PatilShreyas/Capturable/network/members)
-[![GitHub watchers](https://img.shields.io/github/watchers/PatilShreyas/Capturable?style=social)](https://github.com/PatilShreyas/Capturable/watchers)
-[![Twitter Follow](https://img.shields.io/twitter/follow/imShreyasPatil?label=Follow&style=social)](https://twitter.com/imShreyasPatil)
-
 ## 💡Introduction 
 
 In the previous View system, drawing Bitmap Image from `View` was very straightforward. But that's not the case with Jetpack Compose since it's different in many aspects from previous system. This library helps easy way to achieve the same results. 
@@ -52,28 +46,16 @@ _[`rememberCaptureController()`](https://patilshreyas.github.io/Capturable/captu
 
 #### 2. Add the content
 
-The component which needs to be captured should be placed inside [`Capturable`](https://patilshreyas.github.io/Capturable/capturable/dev.shreyaspatil.capturable/-capturable-kt/-capturable.html) composable as follows.
+The component which needs to be captured, a `capturable()` Modifier should be applied on that @Composable component as follows.
 
 ```kotlin
 @Composable
 fun TicketScreen() {
     val captureController = rememberCaptureController()
-    
-    Capturable(
-        controller = captureController,
-        onCaptured = { bitmap, error ->
-           // This is captured bitmap of a content inside Capturable Composable.
-           if (bitmap != null) {
-               // Bitmap is captured successfully. Do something with it!
-           }
-            
-            if (error != null) {
-                // Error occurred. Handle it!
-            }
-        }
-    ) {
-        // Composable content to be captured.
-        // Here, `MovieTicketContent()` will be get captured
+
+    // Composable content to be captured.
+    // Here, everything inside below Column will be get captured
+    Column(modifier = Modifier.capturable(captureController)) {
         MovieTicketContent(...)
     }
 }
@@ -81,29 +63,45 @@ fun TicketScreen() {
 
 #### 3. Capture the content
 
-To capture the content, use [`CaptureController#capture()`](https://patilshreyas.github.io/Capturable/capturable/dev.shreyaspatil.capturable.controller/-capture-controller/capture.html) as follows. 
+To capture the content, use [`CaptureController#captureAsync()`](https://patilshreyas.github.io/Capturable/capturable/dev.shreyaspatil.capturable.controller/-capture-controller/captureAsync.html) as follows. 
 
 ```kotlin
-Button(onClick = { captureController.capture() }) { ... }
+// Example: Capture the content when button is clicked
+Button(onClick = {
+    // Capture content
+    val bitmapAsync = captureController.captureAsync()
+    try {
+        val bitmap = bitmapAsync.await()
+        // Do something with `bitmap`.
+    } catch (error: Throwable) {
+        // Error occurred, do something.
+    }
+}) { ... }
 ```
 
-On calling this method, request for capturing the content will be sent and event will be received in callback `onCaptured` with `ImageBitmap` as a parameter in the `Capturable` function.
+On calling this method, request for capturing the content will be sent and `ImageBitmap` will be 
+returned asynchronously. _This method is safe to be called from Main thread._
 
 By default, it captures the Bitmap using [`Bitmap.Config`](https://developer.android.com/reference/android/graphics/Bitmap.Config) **ARGB_8888**. If you want to modify, you can provide config from [`Bitmap.Config` enum](https://developer.android.com/reference/android/graphics/Bitmap.Config).
 
 Example:
 
 ```kotlin
-captureController.capture(Bitmap.Config.ALPHA_8)
+captureController.captureAsync(Bitmap.Config.ALPHA_8)
 ```
-
-> _Make sure to call this method as a part of **callback function** and **not as a part of the Composable function itself**. Otherwise, it'll lead to capture bitmaps unnecessarily in recompositions which can degrade the performance of the application._
 
 That's all needed!
 
 #### ⚠️ Precaution
 
-While capturing the content on the devices having Android OS **version O and above (API 26+)** and having network images like Coil, Picasso, Glide, etc it may throw error like `java.lang.IllegalArgumentException: Software rendering doesn't support hardware bitmaps`. To overcome such issues, this library uses [`PixelCopy`](https://developer.android.com/reference/android/view/PixelCopy) API to capture Bitmap as a fallback mechanism. `PixelCopy` has some limitations such as it can't generate bitmap if composable content is clipped inside app's Window, beyond or above screen i.e. due to scrolling, etc. So make sure not to include any UI content inside `Composable` which uses hardware bitmaps.
+While capturing the content on the devices having Android OS **version O and above (API 26+)** and 
+having network images like Coil, Picasso, Glide, etc it may throw error like 
+`java.lang.IllegalArgumentException: Software rendering doesn't support hardware bitmaps`. 
+To overcome such issues, this library uses [`PixelCopy`](https://developer.android.com/reference/android/view/PixelCopy) 
+API to capture Bitmap as a fallback mechanism. 
+`PixelCopy` has some limitations such as it can't generate bitmap if composable content is clipped 
+inside app's Window, beyond or above screen i.e. due to scrolling, etc. So make sure not to include 
+any UI content inside `Composable` which uses hardware bitmaps.
 
 ## 📄 API Documentation
 
