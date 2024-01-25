@@ -6,7 +6,7 @@ buildscript {
         dokkaVersion = '1.9.10'
         coroutinesVersion = '1.7.3'
         androidCoreVersion = '1.12.0'
-        composeCompilerVersion = '1.5.9'
+        composeCompilerVersion = '1.5.8'
         composeBomVersion = '2024.01.00'
         jUnitVersion = '4.13.2'
         androidJUnitTestVersion = '1.1.5'
