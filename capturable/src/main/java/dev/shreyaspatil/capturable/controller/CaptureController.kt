@@ -43,6 +43,7 @@ class CaptureController internal constructor() {
     /**
      * Medium for providing capture requests
      */
+    @Suppress("ktlint")
     private val _captureRequests = MutableSharedFlow<CaptureRequest>(extraBufferCapacity = 1)
     internal val captureRequests = _captureRequests.asSharedFlow()
 

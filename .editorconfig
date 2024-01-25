@@ -761,6 +761,9 @@ ij_groovy_while_on_new_line = false
 ij_groovy_wrap_long_lines = false
 
 [{*.gradle.kts,*.kt,*.kts,*.main.kts}]
+ij_kotlin_allow_trailing_comma=true
+ij_kotlin_allow_trailing_comma_on_call_site=true
+ktlint_function_naming_ignore_when_annotated_with=Composable, Test
 ij_kotlin_align_in_columns_case_branch = false
 ij_kotlin_align_multiline_binary_operation = false
 ij_kotlin_align_multiline_extends_list = false

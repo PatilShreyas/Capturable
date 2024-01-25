@@ -60,9 +60,7 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.7.2'
 
     // Jetpack Compose
-    // Currently it's using alpha version for API preview
-    // implementation platform("androidx.compose:compose-bom:$composeBomVersion")
-    implementation(platform("dev.chrisbanes.compose:compose-bom:2023.12.00-alpha02"))
+    implementation platform("androidx.compose:compose-bom:$composeBomVersion")
     implementation "androidx.compose.foundation:foundation"
     implementation "androidx.compose.ui:ui"
     implementation "androidx.compose.material:material"
