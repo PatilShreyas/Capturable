@@ -170,8 +170,6 @@ private class CapturableModifierNode(
     var controller: CaptureController
 ) : DelegatingNode(), DelegatableNode {
 
-    val picture = Picture()
-
     /**
      * Delegates the drawing to [CacheDrawModifierNode] in order to draw content rendered on the
      * canvas directly to the [picture].
@@ -202,6 +200,7 @@ private class CapturableModifierNode(
             controller.captureRequests.collect { request ->
                 val completable = request.imageBitmapDeferred
                 try {
+                    val picture = getCurrentContentAsPicture()
                     val bitmap = withContext(Dispatchers.Default) {
                         picture.asBitmap(request.config)
                     }
