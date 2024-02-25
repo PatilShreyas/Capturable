@@ -267,9 +267,12 @@ private fun Picture.asBitmap(config: Bitmap.Config): Bitmap {
         Bitmap.createBitmap(this@asBitmap)
     } else {
         val bitmap = Bitmap.createBitmap(
-            /* width = */this@asBitmap.width,
-            /* height = */this@asBitmap.height,
-            /* config = */config
+            /* width = */
+            this@asBitmap.width,
+            /* height = */
+            this@asBitmap.height,
+            /* config = */
+            config
         )
         val canvas = android.graphics.Canvas(bitmap)
         canvas.drawColor(android.graphics.Color.WHITE)
