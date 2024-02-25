@@ -3,6 +3,7 @@ $dokka.linkExtension:html
 $dokka.location:dev.shreyaspatil.capturable.controller////PointingToDeclaration/capturable/dev.shreyaspatil.capturable.controller/index.html
 $dokka.location:dev.shreyaspatil.capturable.controller//rememberCaptureController/#/PointingToDeclaration/capturable/dev.shreyaspatil.capturable.controller/remember-capture-controller.html
 $dokka.location:dev.shreyaspatil.capturable.controller/CaptureController///PointingToDeclaration/capturable/dev.shreyaspatil.capturable.controller/-capture-controller/index.html
+$dokka.location:dev.shreyaspatil.capturable.controller/CaptureController/CaptureController/#/PointingToDeclaration/capturable/dev.shreyaspatil.capturable.controller/-capture-controller/-capture-controller.html
 $dokka.location:dev.shreyaspatil.capturable.controller/CaptureController/capture/#android.graphics.Bitmap.Config/PointingToDeclaration/capturable/dev.shreyaspatil.capturable.controller/-capture-controller/capture.html
 $dokka.location:dev.shreyaspatil.capturable.controller/CaptureController/captureAsync/#android.graphics.Bitmap.Config/PointingToDeclaration/capturable/dev.shreyaspatil.capturable.controller/-capture-controller/capture-async.html
 $dokka.location:dev.shreyaspatil.capturable////PointingToDeclaration/capturable/dev.shreyaspatil.capturable/index.html

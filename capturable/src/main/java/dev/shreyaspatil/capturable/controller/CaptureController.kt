@@ -38,7 +38,7 @@ import kotlinx.coroutines.flow.asSharedFlow
  * Controller for capturing [Composable] content.
  * @see dev.shreyaspatil.capturable.Capturable for implementation details.
  */
-class CaptureController internal constructor() {
+class CaptureController {
 
     /**
      * Medium for providing capture requests
