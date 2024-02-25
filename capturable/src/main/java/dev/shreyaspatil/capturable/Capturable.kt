@@ -210,7 +210,48 @@ private class CapturableModifierNode(
                     completable.completeExceptionally(error)
                 }
             }
-        }
+    }
+
+    private suspend fun getCurrentContentAsPicture(): Picture {
+        return Picture().apply { drawCanvasIntoPicture(this) }
+    }
+
+    /**
+     * Draws the current content into the provided [picture]
+     */
+    private suspend fun drawCanvasIntoPicture(picture: Picture) {
+        // CompletableDeferred to wait until picture is drawn from the Canvas content
+        val pictureDrawn = CompletableDeferred<Unit>()
+
+        // Delegate the task to draw the content into the picture
+        val delegatedNode = delegate(
+            CacheDrawModifierNode {
+                val width = this.size.width.toInt()
+                val height = this.size.height.toInt()
+
+                onDrawWithContent {
+                    val pictureCanvas = Canvas(picture.beginRecording(width, height))
+
+                    draw(this, this.layoutDirection, pictureCanvas, this.size) {
+                        this@onDrawWithContent.drawContent()
+                    }
+                    picture.endRecording()
+
+                    drawIntoCanvas { canvas ->
+                        canvas.nativeCanvas.drawPicture(picture)
+
+                        // Notify that picture is drawn
+                        pictureDrawn.complete(Unit)
+                    }
+                }
+            }
+        )
+        // Wait until picture is drawn
+        pictureDrawn.await()
+
+        // As task is accomplished, remove the delegation of node to prevent draw operations on UI
+        // updates or recompositions.
+        undelegate(delegatedNode)
     }
 }
 
@@ -222,12 +263,9 @@ private fun Picture.asBitmap(config: Bitmap.Config): Bitmap {
         Bitmap.createBitmap(this@asBitmap)
     } else {
         val bitmap = Bitmap.createBitmap(
-            /* width = */
-            this@asBitmap.width,
-            /* height = */
-            this@asBitmap.height,
-            /* config = */
-            config
+            /* width = */this@asBitmap.width,
+            /* height = */this@asBitmap.height,
+            /* config = */config
         )
         val canvas = android.graphics.Canvas(bitmap)
         canvas.drawColor(android.graphics.Color.WHITE)
