@@ -22,7 +22,7 @@ In `build.gradle` of app module, include this dependency
 
 ```gradle
 dependencies {
-    implementation "dev.shreyaspatil:capturable:2.0.0"
+    implementation "dev.shreyaspatil:capturable:2.1.0"
 }
 ```
 
