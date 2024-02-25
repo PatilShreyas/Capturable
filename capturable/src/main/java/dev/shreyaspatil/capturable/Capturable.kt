@@ -45,7 +45,11 @@ import androidx.compose.ui.node.DelegatableNode
 import androidx.compose.ui.node.DelegatingNode
 import androidx.compose.ui.node.ModifierNodeElement
 import dev.shreyaspatil.capturable.controller.CaptureController
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -157,47 +161,48 @@ private data class CapturableModifierNodeElement(
     }
 
     override fun update(node: CapturableModifierNode) {
-        node.controller = controller
+        node.updateController(controller)
     }
 }
 
 /**
- * Capturable Modifier node which delegates task to the [CacheDrawModifierNode] for drawing
- * Composable UI to the Picture and then helping it to converting picture into a Bitmap.
+ * Capturable Modifier node which delegates task to the [CacheDrawModifierNode] for drawing in
+ * runtime when content capture is requested
+ * [CacheDrawModifierNode] is used for drawing Composable UI from Canvas to the Picture and then
+ * this node converts picture into a Bitmap.
+ *
+ * @param controller A [CaptureController] which gives control to capture the Composable content.
  */
 @Suppress("unused")
 private class CapturableModifierNode(
-    var controller: CaptureController
+    controller: CaptureController
 ) : DelegatingNode(), DelegatableNode {
 
     /**
-     * Delegates the drawing to [CacheDrawModifierNode] in order to draw content rendered on the
-     * canvas directly to the [picture].
+     * State to hold the current [CaptureController] instance.
+     * This can be updated via [updateController] method.
      */
-    val drawModifierNode = delegate(
-        CacheDrawModifierNode {
-            // Example that shows how to redirect rendering to an Android Picture and then
-            // draw the picture into the original destination
-            val width = this.size.width.toInt()
-            val height = this.size.height.toInt()
-
-            onDrawWithContent {
-                val pictureCanvas = Canvas(picture.beginRecording(width, height))
-
-                draw(this, this.layoutDirection, pictureCanvas, this.size) {
-                    this@onDrawWithContent.drawContent()
-                }
-                picture.endRecording()
-
-                drawIntoCanvas { canvas -> canvas.nativeCanvas.drawPicture(picture) }
-            }
-        }
-    )
+    private val currentController = MutableStateFlow(controller)
 
     override fun onAttach() {
         super.onAttach()
         coroutineScope.launch {
-            controller.captureRequests.collect { request ->
+            observeCaptureRequestsAndServe()
+        }
+    }
+
+    /**
+     * Sets new [CaptureController]
+     */
+    fun updateController(newController: CaptureController) {
+        currentController.value = newController
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private suspend fun observeCaptureRequestsAndServe() {
+        currentController
+            .flatMapLatest { it.captureRequests }
+            .collect { request ->
                 val completable = request.imageBitmapDeferred
                 try {
                     val picture = getCurrentContentAsPicture()
