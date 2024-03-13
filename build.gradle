@@ -11,7 +11,7 @@ buildscript {
         jUnitVersion = '4.13.2'
         androidJUnitTestVersion = '1.1.5'
         spotlessVersion = '6.25.0'
-        mavenPublishVersion = '0.27.0'
+        mavenPublishVersion = '0.28.0'
     }
     repositories {
         google()
