@@ -66,14 +66,17 @@ To capture the content, use [`CaptureController#captureAsync()`](https://patilsh
 
 ```kotlin
 // Example: Capture the content when button is clicked
+val scope = rememberCoroutineScope()
 Button(onClick = {
     // Capture content
-    val bitmapAsync = captureController.captureAsync()
-    try {
-        val bitmap = bitmapAsync.await()
-        // Do something with `bitmap`.
-    } catch (error: Throwable) {
-        // Error occurred, do something.
+    scope.launch {
+        val bitmapAsync = captureController.captureAsync()
+        try {
+            val bitmap = bitmapAsync.await()
+            // Do something with `bitmap`.
+        } catch (error: Throwable) {
+            // Error occurred, do something.
+        }
     }
 }) { ... }
 ```
