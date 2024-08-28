@@ -22,11 +22,8 @@
 * SOFTWARE.
 *
 */
-package dev.shreyaspatil.capturableExample
+package dev.shreyaspatil.capturableExample.ui
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -54,30 +51,30 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import capturable.app.generated.resources.Res
+import capturable.app.generated.resources.ic_baseline_check_circle_24
+import capturable.app.generated.resources.ic_baseline_qr_code_24
 import dev.shreyaspatil.capturable.capturable
 import dev.shreyaspatil.capturable.controller.rememberCaptureController
 import dev.shreyaspatil.capturableExample.ui.theme.CapturableExampleTheme
 import dev.shreyaspatil.capturableExample.ui.theme.LightGray
 import dev.shreyaspatil.capturableExample.ui.theme.Teal200
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
 
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            CapturableExampleTheme {
-                Surface(color = Teal200, modifier = Modifier.fillMaxSize()) {
-                    TicketScreen()
-                }
-            }
+@Composable
+fun App() {
+    CapturableExampleTheme {
+        Surface(color = Teal200, modifier = Modifier.fillMaxSize()) {
+            TicketScreen()
         }
     }
 }
+
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalComposeApi::class)
 @Composable
@@ -168,7 +165,7 @@ fun BookingConfirmedContent() {
             modifier = Modifier.weight(0.8f)
         )
         Image(
-            painter = painterResource(id = R.drawable.ic_baseline_check_circle_24),
+            painter = painterResource(Res.drawable.ic_baseline_check_circle_24),
             contentDescription = "Successfully booked",
             modifier = Modifier
                 .weight(0.2f)
@@ -212,18 +209,10 @@ fun BookingQRCode() {
         style = MaterialTheme.typography.overline
     )
     Icon(
-        painter = painterResource(R.drawable.ic_baseline_qr_code_24),
+        painter = painterResource(Res.drawable.ic_baseline_qr_code_24),
         contentDescription = "Success",
         modifier = Modifier.size(128.dp)
     )
 
     Text("Booking ID: JETPACK0000012345", style = MaterialTheme.typography.caption)
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    CapturableExampleTheme {
-        TicketScreen()
-    }
 }
