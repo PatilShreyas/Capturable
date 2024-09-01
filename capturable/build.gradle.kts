@@ -21,6 +21,11 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
+    jvm()
+    wasmJs {
+        browser()
+    }
+
     applyDefaultHierarchyTemplate()
 
     sourceSets {
@@ -43,7 +48,22 @@ kotlin {
 
         androidMain.dependencies { implementation("androidx.core:core-ktx:1.13.0") }
 
-        iosMain.dependencies { implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0") }
+
+        val skiaMain by creating {
+            dependsOn(getByName("commonMain"))
+        }
+
+        val iosMain by getting {
+            dependsOn(skiaMain)
+        }
+
+        val jvmMain by getting {
+            dependsOn(skiaMain)
+        }
+
+        val wasmJsMain by getting {
+            dependsOn(skiaMain)
+        }
     }
 }
 
