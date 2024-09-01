@@ -2,37 +2,37 @@
 
 ![Capturable](art/header.png)
 
-🚀A Jetpack Compose utility library for converting Composable content into Bitmap image 🖼️.  
-_Made with ❤️ for Android Developers and Composers_ 
+🚀A Kotlin Multiplatform utility library for converting Composable content into Bitmap images 🖼️.  
+_Made with ❤️ for developers working across WebAssembly (WASM), Android, iOS, and desktop platforms._
 
 [![Build](https://github.com/PatilShreyas/Capturable/actions/workflows/build.yml/badge.svg)](https://github.com/PatilShreyas/Capturable/actions/workflows/build.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/dev.shreyaspatil/capturable)](https://search.maven.org/artifact/dev.shreyaspatil/capturable)
 
-## 💡Introduction 
+## 💡Introduction
 
-In the previous View system, drawing Bitmap Image from `View` was very straightforward. But that's not the case with Jetpack Compose since it's different in many aspects from previous system. This library helps easy way to achieve the same results.
+In the previous View system, drawing a Bitmap Image from a `View` was straightforward. However, with Jetpack Compose's unique characteristics, achieving the same is different. This library provides a simple way to capture Composable content into a Bitmap, making it suitable for Kotlin Multiplatform projects targeting WebAssembly (WASM), Android, iOS, and desktop.
 
 ## 🚀 Implementation
 
-You can check [/app](/app) directory which includes example application for demonstration. 
+You can check the [/app](/app) directory, which includes an example application for demonstration.
 
 ### Gradle setup
 
-In `build.gradle` of app module, include this dependency
+In the `build.gradle.kts` of the relevant module, include this dependency:
 
 ```gradle
 dependencies {
-    implementation "dev.shreyaspatil:capturable:2.1.0"
+    implementation("dev.shreyaspatil:capturable:2.1.0")
 }
 ```
 
-_You can find latest version and changelogs in the [releases](https://github.com/PatilShreyas/Capturable/releases)_.
+_You can find the latest version and changelogs in the [releases](https://github.com/PatilShreyas/Capturable/releases)_.
 
 ### Usage
 
 #### 1. Setup the controller
 
-To be able to capture Composable content, you need instance of [`CaptureController`](https://patilshreyas.github.io/Capturable/capturable/dev.shreyaspatil.capturable.controller/-capture-controller/index.html) by which you can decide when to capture the content. You can get the instance as follow.
+To capture Composable content, you need an instance of the [`CaptureController`](https://patilshreyas.github.io/Capturable/capturable/dev.shreyaspatil.capturable.controller/-capture-controller/index.html), which allows you to decide when to capture the content. You can obtain the instance as follows:
 
 ```kotlin
 @Composable
@@ -45,7 +45,7 @@ _[`rememberCaptureController()`](https://patilshreyas.github.io/Capturable/captu
 
 #### 2. Add the content
 
-The component which needs to be captured, a `capturable()` Modifier should be applied on that @Composable component as follows.
+To capture a specific component, apply a `capturable()` Modifier to that @Composable component as shown:
 
 ```kotlin
 @Composable
@@ -53,7 +53,7 @@ fun TicketScreen() {
     val captureController = rememberCaptureController()
 
     // Composable content to be captured.
-    // Here, everything inside below Column will be get captured
+    // Here, everything inside the following Column will be captured
     Column(modifier = Modifier.capturable(captureController)) {
         MovieTicketContent(...)
     }
@@ -62,10 +62,10 @@ fun TicketScreen() {
 
 #### 3. Capture the content
 
-To capture the content, use [`CaptureController#captureAsync()`](https://patilshreyas.github.io/Capturable/capturable/dev.shreyaspatil.capturable.controller/-capture-controller/captureAsync.html) as follows. 
+To capture the content, use [`CaptureController#captureAsync()`](https://patilshreyas.github.io/Capturable/capturable/dev.shreyaspatil.capturable.controller/-capture-controller/captureAsync.html) as follows:
 
 ```kotlin
-// Example: Capture the content when button is clicked
+// Example: Capture the content when a button is clicked
 val scope = rememberCoroutineScope()
 Button(onClick = {
     // Capture content
@@ -75,16 +75,15 @@ Button(onClick = {
             val bitmap = bitmapAsync.await()
             // Do something with `bitmap`.
         } catch (error: Throwable) {
-            // Error occurred, do something.
+            // Handle the error
         }
     }
 }) { ... }
 ```
 
-On calling this method, request for capturing the content will be sent and `ImageBitmap` will be 
-returned asynchronously. _This method is safe to be called from Main thread._
+When this method is called, a request to capture the content is sent, and `ImageBitmap` is returned asynchronously. _This method is safe to call from the Main thread._
 
-By default, it captures the Bitmap using [`Bitmap.Config`](https://developer.android.com/reference/android/graphics/Bitmap.Config) **ARGB_8888**. If you want to modify, you can provide config from [`Bitmap.Config` enum](https://developer.android.com/reference/android/graphics/Bitmap.Config).
+By default, it captures the Bitmap using [`Bitmap.Config`](https://developer.android.com/reference/android/graphics/Bitmap.Config) **ARGB_8888**. You can modify this by providing a different config from the [`Bitmap.Config` enum](https://developer.android.com/reference/android/graphics/Bitmap.Config).
 
 Example:
 
@@ -92,21 +91,21 @@ Example:
 captureController.captureAsync(Bitmap.Config.ALPHA_8)
 ```
 
-That's all needed!
+That's all you need!
 
 ## 📄 API Documentation
 
-[**Visit the API documentation of this library**](https://patilshreyas.github.io/Capturable) to get more information in detail.
+[**Visit the API documentation of this library**](https://patilshreyas.github.io/Capturable) for more detailed information.
 
 ---
 
-## 🙋‍♂️ Contribute 
+## 🙋‍♂️ Contribute
 
-Read [contribution guidelines](CONTRIBUTING.md) for more information regarding contribution.
+Read the [contribution guidelines](CONTRIBUTING.md) for more information on how to contribute.
 
-## 💬 Discuss? 
+## 💬 Discuss?
 
-Have any questions, doubts or want to present your opinions, views? You're always welcome. You can [start discussions](https://github.com/PatilShreyas/Capturable/discussions).
+Have any questions, doubts, or want to share your opinions? You're always welcome. You can [start discussions](https://github.com/PatilShreyas/Capturable/discussions).
 
 ## 📝 License
 
