@@ -7,7 +7,7 @@ buildscript {
         coroutinesVersion = '1.8.1'
         androidCoreVersion = '1.13.1'
         composeCompilerVersion = '1.5.8'
-        composeBomVersion = '2024.05.00'
+        composeBomVersion = '2024.09.00'
         jUnitVersion = '4.13.2'
         androidJUnitTestVersion = '1.2.1'
         spotlessVersion = '6.25.0'
