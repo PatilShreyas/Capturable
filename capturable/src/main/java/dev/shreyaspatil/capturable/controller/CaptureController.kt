@@ -38,7 +38,7 @@ import kotlinx.coroutines.flow.asSharedFlow
  * Controller for capturing [Composable] content.
  * @see dev.shreyaspatil.capturable.Capturable for implementation details.
  */
-class CaptureController {
+class CaptureController(private val graphicsLayer: GraphicsLayer) {
 
     /**
      * Medium for providing capture requests
@@ -91,7 +91,7 @@ class CaptureController {
      */
     internal class CaptureRequest(
         val imageBitmapDeferred: CompletableDeferred<ImageBitmap>,
-        val config: Bitmap.Config
+        val graphicsLayer: GraphicsLayer
     )
 }
 
@@ -100,5 +100,6 @@ class CaptureController {
  */
 @Composable
 fun rememberCaptureController(): CaptureController {
-    return remember { CaptureController() }
+    val graphicsLayer = rememberGraphicsLayer()
+    return remember(graphicsLayer) { CaptureController(graphicsLayer) }
 }
