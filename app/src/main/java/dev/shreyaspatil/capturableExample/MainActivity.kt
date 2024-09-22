@@ -39,6 +39,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Button
 import androidx.compose.material.Card
+import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -157,16 +158,21 @@ fun Ticket(modifier: Modifier) {
             BookingDetail()
             Spacer(modifier = Modifier.size(32.dp))
             BookingQRCode()
+            Divider(Modifier.padding(vertical = 8.dp))
+            Timer()
+        }
+    }
+}
 
-            var time by remember { mutableStateOf("") }
-            Text(time)
+@Composable
+private fun Timer() {
+    var time by remember { mutableStateOf("") }
+    Text(time)
 
-            LaunchedEffect(Unit) {
-                repeat(1000) {
-                    delay(100)
-                    time = it.toString()
-                }
-            }
+    LaunchedEffect(Unit) {
+        repeat(1000) {
+            delay(1000)
+            time = "Seconds: $it"
         }
     }
 }
