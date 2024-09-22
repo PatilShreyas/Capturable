@@ -1,8 +1,8 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext {
-        agpVersion = '8.2.2'
-        kotlinVersion = '1.9.22'
+        agpVersion = '8.6.1'
+        kotlinVersion = '2.0.20'
         dokkaVersion = '1.9.20'
         coroutinesVersion = '1.8.1'
         androidCoreVersion = '1.13.1'
@@ -27,6 +27,7 @@ buildscript {
 
 plugins {
     id 'com.diffplug.spotless' version "$spotlessVersion"
+    id "org.jetbrains.kotlin.plugin.compose" version "$kotlinVersion" apply false
 }
 
 subprojects {
