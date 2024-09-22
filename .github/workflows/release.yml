@@ -32,11 +32,7 @@ jobs:
       - name: Publish Library
         run: |
           echo "Publishing library🚀"
-          ./gradlew publish --no-daemon --no-parallel
-          echo "Published✅"
-
-          echo "Releasing repository...🚀"
-          ./gradlew closeAndReleaseRepository
+          ./gradlew publishAndReleaseToMavenCentral --no-configuration-cache
           echo "Released✅"
         env:
           ORG_GRADLE_PROJECT_VERSION_NAME: ${{ github.event.inputs.versionName }}
