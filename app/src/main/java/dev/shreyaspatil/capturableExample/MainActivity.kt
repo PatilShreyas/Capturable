@@ -39,12 +39,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Button
 import androidx.compose.material.Card
+import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ExperimentalComposeApi
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -64,6 +66,7 @@ import dev.shreyaspatil.capturable.controller.rememberCaptureController
 import dev.shreyaspatil.capturableExample.ui.theme.CapturableExampleTheme
 import dev.shreyaspatil.capturableExample.ui.theme.LightGray
 import dev.shreyaspatil.capturableExample.ui.theme.Teal200
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -132,6 +135,10 @@ fun TicketScreen() {
                 }
             }
         }
+
+        LaunchedEffect(Unit) {
+            ticketBitmap = captureController.captureAsync().await()
+        }
     }
 }
 
@@ -151,6 +158,21 @@ fun Ticket(modifier: Modifier) {
             BookingDetail()
             Spacer(modifier = Modifier.size(32.dp))
             BookingQRCode()
+            Divider(Modifier.padding(vertical = 8.dp))
+            Timer()
+        }
+    }
+}
+
+@Composable
+private fun Timer() {
+    var time by remember { mutableStateOf("") }
+    Text(time)
+
+    LaunchedEffect(Unit) {
+        repeat(1000) {
+            delay(1000)
+            time = "Seconds: $it"
         }
     }
 }
