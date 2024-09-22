@@ -40,8 +40,7 @@ import org.junit.Test
 @Suppress("DeferredResultUnused")
 class CaptureControllerTest {
 
-    private val graphicsLayer = mockk<GraphicsLayer>()
-    private val controller = CaptureController(graphicsLayer)
+    private val controller = CaptureController(mockk())
 
     @Test
     fun captureAsync_validConfig_withNoParameters() = runTest {
@@ -54,7 +53,6 @@ class CaptureControllerTest {
         val captureRequest = captureRequestDeferred.await()
 
         // Then: Capture request should be get emitted with graphics layer
-        assertEquals(captureRequest.graphicsLayer, graphicsLayer)
         assertEquals(captureRequest.imageBitmapDeferred.isActive, true)
     }
 
