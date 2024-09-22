@@ -154,4 +154,3 @@ private class CapturableModifierNode(
         drawLayer(currentGraphicsLayer)
     }
 }
-
