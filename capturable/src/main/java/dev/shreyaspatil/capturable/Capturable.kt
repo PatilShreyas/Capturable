@@ -51,69 +51,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
-/**
- * ***Deprecated: Use Modifier.[capturable] for replacement.***
- *
- * A composable with [content] which supports to capture [ImageBitmap] from a [content].
- *
- * Example usage:
- *
- * ```
- *  val captureController = rememberCaptureController()
- *  Capturable(
- *      controller = captureController,
- *      onCaptured = { bitmap, error ->
- *          // Do something with [bitmap]
- *          // Handle [error] if required
- *      }
- *  ) {
- *      // Composable content
- *  }
- *
- *  Button(onClick = {
- *      // Capture content
- *      captureController.capture()
- *  }) { ... }
- * ```
- *
- * @param controller A [CaptureController] which gives control to capture the [content].
- * @param modifier The [Modifier] to be applied to the layout.
- * @param onCaptured The callback which gives back [ImageBitmap] after composable is captured.
- * If any error is occurred while capturing bitmap, [Throwable] is provided.
- * @param content [Composable] content to be captured.
- */
-@OptIn(ExperimentalComposeUiApi::class)
-@Deprecated(
-    "This Composable method has been deprecated & will be removed in the future releases. " +
-        "Use Modifier `capturable()` directly.",
-    level = DeprecationLevel.WARNING
-)
-@Composable
-fun Capturable(
-    controller: CaptureController,
-    modifier: Modifier = Modifier,
-    onCaptured: (ImageBitmap?, Throwable?) -> Unit,
-    content: @Composable () -> Unit
-) {
-    val updatedOnCaptured by rememberUpdatedState(newValue = onCaptured)
-
-    Column(modifier = modifier.capturable(controller)) {
-        content()
-    }
-
-    LaunchedEffect(key1 = controller) {
-        controller.captureRequests.collect { request ->
-            try {
-                val imageBitmap = request.imageBitmapDeferred.await()
-                updatedOnCaptured(imageBitmap, null)
-            } catch (error: Throwable) {
-                updatedOnCaptured(null, error)
-            }
-        }
-    }
-}
 
 /**
  * Adds a capture-ability on the Composable which can draw Bitmap from the Composable component.
