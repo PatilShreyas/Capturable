@@ -24,30 +24,21 @@
 */
 package dev.shreyaspatil.capturable
 
-import android.graphics.Bitmap
-import android.graphics.Picture
-import android.os.Build
-import androidx.compose.foundation.layout.Column
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.CacheDrawModifierNode
-import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.drawscope.draw
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.drawscope.ContentDrawScope
+import androidx.compose.ui.graphics.layer.GraphicsLayer
+import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.node.DelegatableNode
 import androidx.compose.ui.node.DelegatingNode
+import androidx.compose.ui.node.DrawModifierNode
 import androidx.compose.ui.node.ModifierNodeElement
 import dev.shreyaspatil.capturable.controller.CaptureController
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
@@ -143,78 +134,57 @@ private class CapturableModifierNode(
             .collect { request ->
                 val completable = request.imageBitmapDeferred
                 try {
-                    val picture = getCurrentContentAsPicture()
-                    val bitmap = withContext(Dispatchers.Default) {
-                        picture.asBitmap(request.config)
-                    }
-                    completable.complete(bitmap.asImageBitmap())
+                    val bitmap = getCurrentContentAsPicture(request.graphicsLayer)
+                    completable.complete(bitmap)
                 } catch (error: Throwable) {
                     completable.completeExceptionally(error)
                 }
             }
     }
 
-    private suspend fun getCurrentContentAsPicture(): Picture {
-        return Picture().apply { drawCanvasIntoPicture(this) }
-    }
-
     /**
-     * Draws the current content into the provided [picture]
+     * Draws the current content into the provided [graphicsLayer] and returns [ImageBitmap] out
+     * of it.
      */
-    private suspend fun drawCanvasIntoPicture(picture: Picture) {
+    private suspend fun getCurrentContentAsPicture(graphicsLayer: GraphicsLayer): ImageBitmap {
         // CompletableDeferred to wait until picture is drawn from the Canvas content
-        val pictureDrawn = CompletableDeferred<Unit>()
+        val drawNodeAttached = CompletableDeferred<Unit>()
 
         // Delegate the task to draw the content into the picture
         val delegatedNode = delegate(
-            CacheDrawModifierNode {
-                val width = this.size.width.toInt()
-                val height = this.size.height.toInt()
-
-                onDrawWithContent {
-                    val pictureCanvas = Canvas(picture.beginRecording(width, height))
-
-                    draw(this, this.layoutDirection, pictureCanvas, this.size) {
-                        this@onDrawWithContent.drawContent()
-                    }
-                    picture.endRecording()
-
-                    drawIntoCanvas { canvas ->
-                        canvas.nativeCanvas.drawPicture(picture)
-
-                        // Notify that picture is drawn
-                        pictureDrawn.complete(Unit)
-                    }
+            DrawWithContentModifier {
+                // call record to capture the content in the graphics layer
+                graphicsLayer.record {
+                    // draw the contents of the composable into the graphics layer
+                    this@DrawWithContentModifier.drawContent()
                 }
+                // draw the graphics layer on the visible canvas
+                drawLayer(graphicsLayer)
+                drawNodeAttached.complete(Unit)
             }
         )
-        // Wait until picture is drawn
-        pictureDrawn.await()
+        // Wait until picture is drawn and wait for animation frame too
+        drawNodeAttached.await()
+        awaitFrame()
 
-        // As task is accomplished, remove the delegation of node to prevent draw operations on UI
-        // updates or recompositions.
-        undelegate(delegatedNode)
+        return graphicsLayer.toImageBitmap().also {
+            // As task is accomplished, remove the delegation of node to prevent draw operations on UI
+            // updates or recompositions.
+            undelegate(delegatedNode)
+        }
     }
 }
 
 /**
- * Creates a [Bitmap] from a [Picture] with provided [config]
+ * A node which will be used to draw the Composable content of a node which is currently attached to.
+ *
+ * See https://developer.android.com/develop/ui/compose/graphics/draw/modifiers#composable-to-bitmap
  */
-private fun Picture.asBitmap(config: Bitmap.Config): Bitmap {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-        Bitmap.createBitmap(this@asBitmap)
-    } else {
-        val bitmap = Bitmap.createBitmap(
-            /* width = */
-            this@asBitmap.width,
-            /* height = */
-            this@asBitmap.height,
-            /* config = */
-            config
-        )
-        val canvas = android.graphics.Canvas(bitmap)
-        canvas.drawColor(android.graphics.Color.WHITE)
-        canvas.drawPicture(this@asBitmap)
-        bitmap
+private class DrawWithContentModifier(
+    var onDraw: ContentDrawScope.() -> Unit
+) : Modifier.Node(), DrawModifierNode {
+
+    override fun ContentDrawScope.draw() {
+        onDraw()
     }
 }
