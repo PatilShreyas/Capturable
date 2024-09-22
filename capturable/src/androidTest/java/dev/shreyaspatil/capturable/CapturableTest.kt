@@ -27,14 +27,15 @@ package dev.shreyaspatil.capturable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Text
-import androidx.compose.runtime.ExperimentalComposeApi
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.unit.dp
 import dev.shreyaspatil.capturable.controller.CaptureController
+import dev.shreyaspatil.capturable.controller.rememberCaptureController
 import java.math.RoundingMode
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -45,67 +46,31 @@ class CapturableTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    @Test
-    fun testCapture_withComposable() {
-        val controller = CaptureController()
-        val bitmaps = mutableListOf<ImageBitmap>()
-        val contentHeight = 100.dp
-        val contentWidth = 200.dp
-
-        composeTestRule.setContent {
-            Capturable(
-                controller = controller,
-                onCaptured = { bitmap, _ -> bitmaps.add(bitmap!!) }
-            ) {
-                Box(Modifier.size(contentWidth, contentHeight)) {
-                    Text("Hello! Inside Capturable")
-                }
-            }
-        }
-
-        // When: Content is captured
-        controller.capture()
-
-        // Wait for some time to get a callback
-        Thread.sleep(500)
-
-        // Then: Content should be get captured ONLY ONCE and stored as bitmap
-        assert(bitmaps.size == 1)
-
-        // Then: Dimension of bitmap should be same as content's dimension
-        val bitmap = bitmaps.first()
-
-        val expectedHeight = with(composeTestRule.density) { contentHeight.toPx() }.roundToInt()
-        val expectedWidth = with(composeTestRule.density) { contentWidth.toPx() }.roundToInt()
-
-        val actualHeight = bitmap.height
-        val actualWidth = bitmap.width
-
-        assertEquals(expectedHeight, actualHeight)
-        assertEquals(expectedWidth, actualWidth)
-    }
-
-    @OptIn(ExperimentalComposeUiApi::class, ExperimentalComposeApi::class)
+    @OptIn(ExperimentalComposeUiApi::class)
     @Test
     fun testCapture_withModifier() {
-        val controller = CaptureController()
+        val controller = CompletableDeferred<CaptureController>()
         val contentHeight = 100.dp
         val contentWidth = 200.dp
 
         composeTestRule.setContent {
+            val captureController = rememberCaptureController()
             Box(
                 Modifier
                     .size(contentWidth, contentHeight)
-                    .capturable(controller)
+                    .capturable(captureController)
             ) {
                 Text("Hello! Inside Capturable")
+            }
+
+
+            LaunchedEffect(Unit) {
+                controller.complete(captureController)
             }
         }
 
         // When: Content is captured
-        val futureBitmap = controller.captureAsync()
-
-        val bitmap = runBlocking { futureBitmap.await() }
+        val bitmap = runBlocking { controller.await().captureAsync().await() }
 
         val expectedHeight = with(composeTestRule.density) { contentHeight.toPx() }.roundToInt()
         val expectedWidth = with(composeTestRule.density) { contentWidth.toPx() }.roundToInt()
