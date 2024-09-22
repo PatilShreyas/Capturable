@@ -63,7 +63,6 @@ class CapturableTest {
                 Text("Hello! Inside Capturable")
             }
 
-
             LaunchedEffect(Unit) {
                 controller.complete(captureController)
             }

@@ -43,7 +43,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 
-
 /**
  * Adds a capture-ability on the Composable which can draw Bitmap from the Composable component.
  *

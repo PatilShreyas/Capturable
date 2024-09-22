@@ -45,6 +45,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ExperimentalComposeApi
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -64,6 +65,7 @@ import dev.shreyaspatil.capturable.controller.rememberCaptureController
 import dev.shreyaspatil.capturableExample.ui.theme.CapturableExampleTheme
 import dev.shreyaspatil.capturableExample.ui.theme.LightGray
 import dev.shreyaspatil.capturableExample.ui.theme.Teal200
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -132,6 +134,10 @@ fun TicketScreen() {
                 }
             }
         }
+
+        LaunchedEffect(Unit) {
+            ticketBitmap = captureController.captureAsync().await()
+        }
     }
 }
 
@@ -151,6 +157,16 @@ fun Ticket(modifier: Modifier) {
             BookingDetail()
             Spacer(modifier = Modifier.size(32.dp))
             BookingQRCode()
+
+            var time by remember { mutableStateOf("") }
+            Text(time)
+
+            LaunchedEffect(Unit) {
+                repeat(1000) {
+                    delay(100)
+                    time = it.toString()
+                }
+            }
         }
     }
 }
