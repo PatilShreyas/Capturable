@@ -24,8 +24,8 @@
 */
 package dev.shreyaspatil.capturable.controller
 
-import android.graphics.Bitmap
-import androidx.compose.runtime.ExperimentalComposeApi
+import androidx.compose.ui.graphics.layer.GraphicsLayer
+import io.mockk.mockk
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
@@ -38,10 +38,10 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 @Suppress("DeferredResultUnused")
-@OptIn(ExperimentalComposeApi::class)
 class CaptureControllerTest {
 
-    private val controller = CaptureController()
+    private val graphicsLayer = mockk<GraphicsLayer>()
+    private val controller = CaptureController(graphicsLayer)
 
     @Test
     fun captureAsync_validConfig_withNoParameters() = runTest {
@@ -52,27 +52,10 @@ class CaptureControllerTest {
         controller.captureAsync()
 
         val captureRequest = captureRequestDeferred.await()
-        val expectedConfig = Bitmap.Config.ARGB_8888
 
-        // Then: Capture request should be get emitted with default bitmap config
-        assertEquals(captureRequest.config, expectedConfig)
-    }
-
-    @Test
-    fun captureAsync_validConfig_withCustomParameters() = runTest {
-        // Before capturing, make sure to collect flow request eagerly
-        val captureRequestDeferred = asyncOnUnconfinedDispatcher { getRecentCaptureRequest() }
-
-        // Given: The customized config
-        val expectedConfig = Bitmap.Config.RGB_565
-
-        // When: Captured
-        controller.captureAsync(expectedConfig)
-
-        val captureRequest = captureRequestDeferred.await()
-
-        // Then: Capture request should be get emitted with default bitmap config
-        assertEquals(captureRequest.config, expectedConfig)
+        // Then: Capture request should be get emitted with graphics layer
+        assertEquals(captureRequest.graphicsLayer, graphicsLayer)
+        assertEquals(captureRequest.imageBitmapDeferred.isActive, true)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
