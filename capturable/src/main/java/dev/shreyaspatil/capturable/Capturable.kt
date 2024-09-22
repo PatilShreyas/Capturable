@@ -27,18 +27,13 @@ package dev.shreyaspatil.capturable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.CacheDrawModifierNode
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
-import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.graphics.layer.drawLayer
-import androidx.compose.ui.node.DelegatableNode
-import androidx.compose.ui.node.DelegatingNode
 import androidx.compose.ui.node.DrawModifierNode
 import androidx.compose.ui.node.ModifierNodeElement
+import androidx.compose.ui.platform.InspectorInfo
 import dev.shreyaspatil.capturable.controller.CaptureController
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
@@ -91,6 +86,11 @@ private data class CapturableModifierNodeElement(
     override fun update(node: CapturableModifierNode) {
         node.updateController(controller)
     }
+
+    override fun InspectorInfo.inspectableProperties() {
+        name = "capturable"
+        properties["controller"] = controller
+    }
 }
 
 /**
@@ -104,13 +104,16 @@ private data class CapturableModifierNodeElement(
 @Suppress("unused")
 private class CapturableModifierNode(
     controller: CaptureController
-) : DelegatingNode(), DelegatableNode {
+) : Modifier.Node(), DrawModifierNode {
 
     /**
      * State to hold the current [CaptureController] instance.
      * This can be updated via [updateController] method.
      */
     private val currentController = MutableStateFlow(controller)
+
+    private val currentGraphicsLayer
+        get() = currentController.value.graphicsLayer
 
     override fun onAttach() {
         super.onAttach()
@@ -133,57 +136,22 @@ private class CapturableModifierNode(
             .collect { request ->
                 val completable = request.imageBitmapDeferred
                 try {
-                    val bitmap = getCurrentContentAsPicture(request.graphicsLayer)
-                    completable.complete(bitmap)
+                    completable.complete(currentGraphicsLayer.toImageBitmap())
                 } catch (error: Throwable) {
                     completable.completeExceptionally(error)
                 }
             }
     }
 
-    /**
-     * Draws the current content into the provided [graphicsLayer] and returns [ImageBitmap] out
-     * of it.
-     */
-    private suspend fun getCurrentContentAsPicture(graphicsLayer: GraphicsLayer): ImageBitmap {
-        // CompletableDeferred to wait until picture is drawn from the Canvas content
-        val drawNodeAttached = CompletableDeferred<Unit>()
-
-        // Delegate the task to draw the content into the picture
-        val delegatedNode = delegate(
-            DrawWithContentModifier {
-                // call record to capture the content in the graphics layer
-                graphicsLayer.record {
-                    // draw the contents of the composable into the graphics layer
-                    this@DrawWithContentModifier.drawContent()
-                }
-                // draw the graphics layer on the visible canvas
-                drawLayer(graphicsLayer)
-                drawNodeAttached.complete(Unit)
-            }
-        )
-        // Wait until picture is drawn and wait for animation frame too
-        drawNodeAttached.await()
-        awaitFrame()
-
-        return graphicsLayer.toImageBitmap().also {
-            // As task is accomplished, remove the delegation of node to prevent draw operations on UI
-            // updates or recompositions.
-            undelegate(delegatedNode)
-        }
-    }
-}
-
-/**
- * A node which will be used to draw the Composable content of a node which is currently attached to.
- *
- * See https://developer.android.com/develop/ui/compose/graphics/draw/modifiers#composable-to-bitmap
- */
-private class DrawWithContentModifier(
-    var onDraw: ContentDrawScope.() -> Unit
-) : Modifier.Node(), DrawModifierNode {
-
+    // Ref:
+    // https://developer.android.com/develop/ui/compose/graphics/draw/modifiers#composable-to-bitmap
     override fun ContentDrawScope.draw() {
-        onDraw()
+        currentGraphicsLayer.record {
+            // draw the contents of the composable into the graphics layer
+            this@draw.drawContent()
+        }
+        // draw the graphics layer on the visible canvas
+        drawLayer(currentGraphicsLayer)
     }
 }
+
