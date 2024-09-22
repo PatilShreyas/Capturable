@@ -84,16 +84,6 @@ Button(onClick = {
 On calling this method, request for capturing the content will be sent and `ImageBitmap` will be 
 returned asynchronously. _This method is safe to be called from Main thread._
 
-By default, it captures the Bitmap using [`Bitmap.Config`](https://developer.android.com/reference/android/graphics/Bitmap.Config) **ARGB_8888**. If you want to modify, you can provide config from [`Bitmap.Config` enum](https://developer.android.com/reference/android/graphics/Bitmap.Config).
-
-Example:
-
-```kotlin
-captureController.captureAsync(Bitmap.Config.ALPHA_8)
-```
-
-That's all needed!
-
 ## 📄 API Documentation
 
 [**Visit the API documentation of this library**](https://patilshreyas.github.io/Capturable) to get more information in detail.
