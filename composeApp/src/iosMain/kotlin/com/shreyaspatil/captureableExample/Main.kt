@@ -4,6 +4,6 @@ import androidx.compose.ui.window.ComposeUIViewController
 import dev.shreyaspatil.capturableExample.App
 import platform.UIKit.UIViewController
 
-fun MainViewController(): UIViewController {
+fun mainViewController(): UIViewController {
     return ComposeUIViewController { App() }
 }
