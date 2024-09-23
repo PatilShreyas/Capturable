@@ -25,7 +25,7 @@ In `lib.versions.toml`  include this dependency version catalog
 capturable = "3.0.0"
 
 [libraries]
-capturable = { id = "dev.shreyaspatil:capturable", version.ref = "capturable" }
+capturable = { module = "dev.shreyaspatil:capturable", version.ref= "capturable" }
 ```
 
 ```kotlin

@@ -7,6 +7,20 @@ spotless = "6.25.0"
 mavenPublish = "0.29.0"
 compose = "1.7.0-beta02"
 
+junit = "4.13.2"
+kotlinxCoroutinesTest = "1.8.1"
+mockk = "1.13.12"
+testCore = "1.6.1"
+uiTestManifest = "1.7.2"
+
+[libraries]
+test-core = { module = "androidx.test:core", version.ref = "testCore" }
+junit-android = { module = "junit:junit", version.ref = "junit" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+ui-test-junit4-android = { module = "androidx.compose.ui:ui-test-junit4-android", version.ref = "uiTestManifest" }
+ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "uiTestManifest" }
+
 [plugins]
 
 android-application = { id = "com.android.application", version.ref = "agp" }

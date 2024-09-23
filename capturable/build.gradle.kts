@@ -49,9 +49,9 @@ kotlin {
         }
 
         androidUnitTest.dependencies {
-            implementation("junit:junit:4.13.2")
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
-            implementation("io.mockk:mockk:1.13.12")
+            implementation(libs.junit.android)
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.mockk)
         }
     }
 }
@@ -102,9 +102,9 @@ android {
 }
 
 dependencies {
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4-android:1.7.2")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.7.2")
-    debugImplementation("androidx.test:core:1.6.1")
+    androidTestImplementation(libs.ui.test.junit4.android)
+    debugImplementation(libs.ui.test.manifest)
+    debugImplementation(libs.test.core)
 }
 
 tasks.dokkaHtml.configure {
