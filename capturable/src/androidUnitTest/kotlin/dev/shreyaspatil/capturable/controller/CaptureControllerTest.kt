@@ -22,10 +22,9 @@
 * SOFTWARE.
 *
 */
-package dev.shreyaspatil.captureable.controller
+package dev.shreyaspatil.capturable.controller
 
-import androidx.compose.ui.graphics.rememberGraphicsLayer
-import dev.shreyaspatil.capturable.controller.CaptureController
+import io.mockk.mockk
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlinx.coroutines.CoroutineScope

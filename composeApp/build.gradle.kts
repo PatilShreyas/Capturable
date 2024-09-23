@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
     id("org.jetbrains.kotlin.plugin.compose")
@@ -6,8 +8,16 @@ plugins {
 }
 
 kotlin {
-    jvmToolchain(8)
-    androidTarget()
+    androidTarget {
+        compilations.all {
+            compileTaskProvider {
+                compilerOptions {
+                    jvmTarget.set(JvmTarget.JVM_1_8)
+                    freeCompilerArgs.add("-Xjdk-release=${JavaVersion.VERSION_1_8}")
+                }
+            }
+        }
+    }
 
     listOf(
         iosX64(),
@@ -82,10 +92,5 @@ android {
     buildFeatures {
         compose = true
     }
-//    packagingOptions {
-//        resources {
-//            excludes += '/META-INF/{AL2.0,LGPL2.1}'
-//        }
-//    }
     namespace = "dev.shreyaspatil.capturableExample"
 }

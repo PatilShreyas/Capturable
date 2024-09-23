@@ -4,13 +4,6 @@ buildscript {
         agpVersion = '8.6.1'
         kotlinVersion = '2.0.20'
         dokkaVersion = '1.9.20'
-        coroutinesVersion = '1.8.1'
-        androidCoreVersion = '1.13.1'
-        composeCompilerVersion = '1.5.8'
-        composeBomVersion = '2024.09.02'
-        jUnitVersion = '4.13.2'
-        mockkVersion = '1.13.12'
-        androidJUnitTestVersion = '1.2.1'
         spotlessVersion = '6.25.0'
         mavenPublishVersion = '0.29.0'
     }
