@@ -14,15 +14,31 @@ In the previous View system, drawing Bitmap Image from `View` was very straightf
 
 ## 🚀 Implementation
 
-You can check [/app](/app) directory which includes example application for demonstration. 
+You can check [/composeApp](/composeApp) directory which includes example application for demonstration. 
 
 ### Gradle setup
 
-In `build.gradle` of app module, include this dependency
+In `lib.versions.toml`  include this dependency version catalog
+
+```toml
+[versions]
+capturable = "3.0.0"
+
+[libraries]
+capturable = { id = "dev.shreyaspatil:capturable", version.ref = "capturable" }
+```
+
+```kotlin
+dependencies {
+    implementation(libs.capturable)
+}
+```
+
+or In `build.gradle` of app module, include this dependency
 
 ```gradle
 dependencies {
-    implementation "dev.shreyaspatil:capturable:2.1.0"
+    implementation "dev.shreyaspatil:capturable:3.0.0"
 }
 ```
 
