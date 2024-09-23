@@ -4,11 +4,11 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.dokka")
-    id("org.jetbrains.kotlin.plugin.compose")
-    id("org.jetbrains.kotlin.multiplatform")
-    id("org.jetbrains.compose")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.multiplatform)
+    alias(libs.plugins.compose)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.dokka)
 }
 
 kotlin {

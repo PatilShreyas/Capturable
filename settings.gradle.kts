@@ -1,3 +1,10 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -7,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Capturable"
-include ':composeApp'
-include ':capturable'
+include(":composeApp")
+include(":capturable")
