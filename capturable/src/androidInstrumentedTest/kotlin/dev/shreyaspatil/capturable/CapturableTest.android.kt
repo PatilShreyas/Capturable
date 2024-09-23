@@ -24,17 +24,13 @@
 */
 package dev.shreyaspatil.capturable
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.unit.dp
+import com.shreyaspatil.capturable.TestContent
+import com.shreyaspatil.capturable.roundToInt
 import dev.shreyaspatil.capturable.controller.CaptureController
 import dev.shreyaspatil.capturable.controller.rememberCaptureController
-import java.math.RoundingMode
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -46,7 +42,6 @@ class CapturableTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    @OptIn(ExperimentalComposeUiApi::class)
     @Test
     fun testCapture_withModifier() {
         val controller = CompletableDeferred<CaptureController>()
@@ -55,14 +50,7 @@ class CapturableTest {
 
         composeTestRule.setContent {
             val captureController = rememberCaptureController()
-            Box(
-                Modifier
-                    .size(contentWidth, contentHeight)
-                    .capturable(captureController)
-            ) {
-                Text("Hello! Inside Capturable")
-            }
-
+            TestContent(captureController,contentHeight,contentWidth)
             LaunchedEffect(Unit) {
                 controller.complete(captureController)
             }
@@ -80,9 +68,4 @@ class CapturableTest {
         assertEquals(expectedHeight, actualHeight)
         assertEquals(expectedWidth, actualWidth)
     }
-
-    /**
-     * Converts float value to the integer value by rounding up to ceiling.
-     */
-    private fun Float.roundToInt(): Int = toBigDecimal().setScale(0, RoundingMode.CEILING).toInt()
 }
