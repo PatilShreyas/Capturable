@@ -107,14 +107,24 @@ dependencies {
     debugImplementation("androidx.test:core:1.6.1")
 }
 
-//dokkaHtml.configure {
-//    outputDirectory.set(rootProject.mkdir("docs"))
-//
-//    dokkaSourceSets {
-//        named("main") {
+tasks.dokkaHtml.configure {
+    outputDirectory.set(rootProject.mkdir("docs"))
+
+    dokkaSourceSets {
+        named("commonMain") {
+            displayName.set("Common")
+            noAndroidSdkLink.set(false)
+        }
+        // not need now
+//        named("androidMain") {
+//            displayName.set("Android")
 //            noAndroidSdkLink.set(false)
 //        }
-//    }
-//}
+//        named("iosMain") {
+//            displayName.set("Ios")
+//            platform.set(org.jetbrains.dokka.Platform.native)
+//        }
+    }
+}
 
 apply(plugin = "com.vanniktech.maven.publish")
