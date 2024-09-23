@@ -1,8 +1,49 @@
 plugins {
     id 'com.android.library'
-    id 'kotlin-android'
     id 'org.jetbrains.dokka'
     id 'org.jetbrains.kotlin.plugin.compose'
+    id 'org.jetbrains.kotlin.multiplatform'
+    id 'org.jetbrains.compose'
+}
+
+kotlin {
+    jvmToolchain(8)
+
+    androidTarget {
+        publishLibraryVariants("release")
+    }
+
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+
+    sourceSets {
+        commonMain.dependencies {
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material3)
+            implementation(compose.components.resources)
+            implementation(compose.components.uiToolingPreview)
+        }
+
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+            implementation(compose.uiTest)
+//            implementation("io.mockk:mockk:$mockkVersion")
+
+        }
+
+        androidMain.dependencies {
+
+        }
+
+        androidTest.dependencies {
+            implementation "junit:junit:$jUnitVersion"
+            implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
+            implementation "io.mockk:mockk:$mockkVersion"
+        }
+    }
+
 }
 
 android {
@@ -28,17 +69,9 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
-
     buildFeatures {
         buildConfig false
         compose true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion composeCompilerVersion
     }
 
     packagingOptions {
@@ -53,40 +86,18 @@ android {
 }
 
 dependencies {
-    // Kotlin Coroutines
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
-
-    // Android core
-    implementation "androidx.core:core-ktx:$androidCoreVersion"
-
-    // Jetpack Compose
-    def composeBom = platform("androidx.compose:compose-bom:$composeBomVersion")
-    implementation composeBom
-    implementation "androidx.compose.ui:ui"
-    implementation "androidx.compose.runtime:runtime"
-    implementation "androidx.compose.foundation:foundation"
-
-    // Testing
-    testImplementation "junit:junit:$jUnitVersion"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
-    testImplementation "io.mockk:mockk:$mockkVersion"
-    androidTestImplementation composeBom
-    androidTestImplementation "androidx.test.ext:junit:$androidJUnitTestVersion"
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4"
-    androidTestImplementation "androidx.compose.ui:ui-test-manifest"
-
-    // For using UI components in test
-    androidTestImplementation "androidx.compose.material:material"
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4-android:1.7.2")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.7.2")
 }
 
-dokkaHtml.configure {
-    outputDirectory.set(rootProject.mkdir("docs"))
-
-    dokkaSourceSets {
-        named("main") {
-            noAndroidSdkLink.set(false)
-        }
-    }
-}
+//dokkaHtml.configure {
+//    outputDirectory.set(rootProject.mkdir("docs"))
+//
+//    dokkaSourceSets {
+//        named("main") {
+//            noAndroidSdkLink.set(false)
+//        }
+//    }
+//}
 
 apply plugin: 'com.vanniktech.maven.publish'

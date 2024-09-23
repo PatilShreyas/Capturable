@@ -29,6 +29,8 @@ buildscript {
 plugins {
     id 'com.diffplug.spotless' version "$spotlessVersion"
     id "org.jetbrains.kotlin.plugin.compose" version "$kotlinVersion" apply false
+    id "org.jetbrains.kotlin.multiplatform" version "$kotlinVersion" apply false
+    id "org.jetbrains.compose" version "1.7.0-beta02" apply false
 }
 
 subprojects {

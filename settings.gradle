@@ -7,5 +7,5 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Capturable"
-include ':app'
+include ':composeApp'
 include ':capturable'
