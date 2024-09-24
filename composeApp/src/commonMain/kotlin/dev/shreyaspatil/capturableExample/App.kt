@@ -34,6 +34,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -56,6 +57,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.compose.ui.window.Dialog
 import capturable.composeapp.generated.resources.Res
 import capturable.composeapp.generated.resources.ic_baseline_check_circle_24
@@ -76,7 +78,7 @@ internal fun App() {
     }
 }
 
-
+expect val maxFrame : Float
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TicketScreen() {
@@ -143,7 +145,9 @@ fun TicketScreen() {
 @Composable
 fun Ticket(modifier: Modifier) {
     Card(
-        modifier = modifier,
+        modifier = modifier
+            .fillMaxWidth(maxFrame)
+        ,
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         )
