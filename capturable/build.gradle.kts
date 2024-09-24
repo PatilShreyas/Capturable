@@ -31,6 +31,8 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
+    jvm()
+
     sourceSets {
         commonMain.dependencies {
             implementation(compose.ui)
@@ -39,19 +41,26 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(libs.kotlinx.coroutines.core)
+
         }
 
         commonTest.dependencies {
             implementation(kotlin("test"))
 
+            implementation(libs.kotlinx.coroutines.test)
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.uiTest)
         }
 
         androidUnitTest.dependencies {
             implementation(libs.junit.android)
-            implementation(libs.kotlinx.coroutines.test)
             implementation(libs.mockk)
+        }
+
+        jvmTest.dependencies {
+            implementation(compose.desktop.uiTestJUnit4)
+            implementation(compose.desktop.currentOs)
         }
     }
 }
