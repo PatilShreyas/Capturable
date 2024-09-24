@@ -1,5 +1,4 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.application)
@@ -9,16 +8,8 @@ plugins {
 }
 
 kotlin {
-    androidTarget {
-        compilations.all {
-            compileTaskProvider {
-                compilerOptions {
-                    jvmTarget.set(JvmTarget.JVM_1_8)
-                    freeCompilerArgs.add("-Xjdk-release=${JavaVersion.VERSION_1_8}")
-                }
-            }
-        }
-    }
+    jvmToolchain(17)
+    androidTarget {}
 
     jvm()
 
@@ -31,6 +22,11 @@ kotlin {
             baseName = "ComposeApp"
             isStatic = true
         }
+    }
+
+    wasmJs {
+        browser()
+        binaries.executable()
     }
 
     sourceSets {

@@ -1,18 +1,31 @@
+rootProject.name = "Capturable"
+
 pluginManagement {
     repositories {
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+                includeGroupByRegex("android.*")
+            }
+        }
         gradlePluginPortal()
-        google()
         mavenCentral()
     }
 }
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        google()
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+                includeGroupByRegex("android.*")
+            }
+        }
         mavenCentral()
-        jcenter() // Warning: this repository is going to shut down soon
     }
 }
-rootProject.name = "Capturable"
 include(":composeApp")
 include(":capturable")

@@ -1,5 +1,6 @@
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 
@@ -32,6 +33,10 @@ kotlin {
     iosSimulatorArm64()
 
     jvm()
+
+    wasmJs {
+        browser()
+    }
 
     sourceSets {
         commonMain.dependencies {
