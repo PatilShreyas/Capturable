@@ -16,6 +16,27 @@ In the previous View system, drawing Bitmap Image from `View` was very straightf
 
 You can check [/composeApp](/composeApp) directory which includes example application for demonstration. 
 
+<details>
+<summary>How To Run?</summary>
+
+### Android
+To run the application on android device/emulator:  
+ - open project in Android Studio and run imported android run configuration
+
+### Desktop
+Run the desktop application: `./gradlew :composeApp:run`
+
+### iOS
+To run the application on iPhone device/simulator:
+- Open `iosApp/iosApp.xcproject` in Xcode and run standard configuration
+
+### JS Browser (Experimental)
+Run the browser application: `./gradlew :composeApp:jsBrowserDevelopmentRun --continue`
+
+### Wasm Browser (Alpha)
+Run the browser application: `./gradlew :composeApp:wasmJsBrowserDevelopmentRun --continue`
+</details>
+
 ### Gradle setup
 
 In `lib.versions.toml`  include this dependency version catalog
