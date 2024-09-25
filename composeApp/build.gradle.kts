@@ -29,6 +29,11 @@ kotlin {
         binaries.executable()
     }
 
+    js {
+        browser()
+        binaries.executable()
+    }
+
     sourceSets {
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -38,7 +43,6 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
 
             implementation(project(":capturable"))
-
         }
 
         androidMain.dependencies {
@@ -46,13 +50,14 @@ kotlin {
             implementation("androidx.activity:activity-compose:1.9.2")
         }
 
-        iosMain.dependencies {
-
-        }
-
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
         }
+
+        jsMain.dependencies {
+            implementation(compose.html.core)
+        }
+
     }
 
 }
@@ -102,13 +107,13 @@ compose.desktop {
             packageVersion = "1.0.0"
 
             linux {
-                iconFile.set(project.file("desktopAppIcons/LinuxIcon.png"))
+//                iconFile.set(project.file("desktopAppIcons/LinuxIcon.png"))
             }
             windows {
-                iconFile.set(project.file("desktopAppIcons/WindowsIcon.ico"))
+//                iconFile.set(project.file("desktopAppIcons/WindowsIcon.ico"))
             }
             macOS {
-                iconFile.set(project.file("desktopAppIcons/MacosIcon.icns"))
+//                iconFile.set(project.file("desktopAppIcons/MacosIcon.icns"))
                 bundleID = "dev.shreyaspatil.capturableExample.desktopApp"
             }
         }

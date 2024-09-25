@@ -28,15 +28,18 @@ kotlin {
         instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
     }
 
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
-
     jvm()
 
     wasmJs {
         browser()
     }
+
+    js {
+        browser()
+    }
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
 
     sourceSets {
         commonMain.dependencies {

@@ -78,7 +78,9 @@ internal fun App() {
     }
 }
 
+//Ticket Max Width Percent
 expect val maxFrame : Float
+
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TicketScreen() {
