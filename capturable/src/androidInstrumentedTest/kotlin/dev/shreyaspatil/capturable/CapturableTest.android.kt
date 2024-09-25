@@ -26,7 +26,6 @@ package dev.shreyaspatil.capturable
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.unit.dp
 import com.shreyaspatil.capturable.TestContent
 import com.shreyaspatil.capturable.contentHeight
 import com.shreyaspatil.capturable.contentWidth
@@ -35,7 +34,6 @@ import dev.shreyaspatil.capturable.controller.CaptureController
 import dev.shreyaspatil.capturable.controller.rememberCaptureController
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -64,7 +62,6 @@ class CapturableTest {
 
         val actualHeight = bitmap.height
         val actualWidth = bitmap.width
-
 
         assertEquals(expectedHeight, actualHeight)
         assertEquals(expectedWidth, actualWidth)

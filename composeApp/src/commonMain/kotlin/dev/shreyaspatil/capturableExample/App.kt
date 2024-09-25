@@ -34,7 +34,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -57,7 +56,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import androidx.compose.ui.window.Dialog
 import capturable.composeapp.generated.resources.Res
 import capturable.composeapp.generated.resources.ic_baseline_check_circle_24
@@ -78,8 +76,8 @@ internal fun App() {
     }
 }
 
-//Ticket Max Width Percent
-expect val maxFrame : Float
+// Ticket Max Width Percent
+expect val maxFrame: Float
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -148,8 +146,7 @@ fun TicketScreen() {
 fun Ticket(modifier: Modifier) {
     Card(
         modifier = modifier
-            .fillMaxWidth(maxFrame)
-        ,
+            .fillMaxWidth(maxFrame),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         )
@@ -205,7 +202,7 @@ fun BookingConfirmedContent() {
                 .weight(0.2f)
                 .size(128.dp),
             colorFilter = ColorFilter.tint(Color(0xff05CB4E))
-            )
+        )
     }
 }
 
@@ -252,7 +249,7 @@ fun BookingQRCode() {
     Text("Booking ID: JETPACK0000012345", style = MaterialTheme.typography.titleSmall)
 }
 
-//Common Preview support only Fleet..
+// Common Preview support only Fleet..
 @Preview
 @Composable
 fun DefaultPreview() {
