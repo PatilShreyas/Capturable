@@ -107,13 +107,13 @@ compose.desktop {
             packageVersion = "1.0.0"
 
             linux {
-//                iconFile.set(project.file("desktopAppIcons/LinuxIcon.png"))
+                iconFile.set(project.file("desktopAppIcons/LinuxIcon.png"))
             }
             windows {
-//                iconFile.set(project.file("desktopAppIcons/WindowsIcon.ico"))
+                iconFile.set(project.file("desktopAppIcons/WindowsIcon.ico"))
             }
             macOS {
-//                iconFile.set(project.file("desktopAppIcons/MacosIcon.icns"))
+                iconFile.set(project.file("desktopAppIcons/MacosIcon.icns"))
                 bundleID = "dev.shreyaspatil.capturableExample.desktopApp"
             }
         }
