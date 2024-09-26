@@ -3,11 +3,9 @@ $dokka.linkExtension:html
 $dokka.location:dev.shreyaspatil.capturable.controller////PointingToDeclaration/capturable/dev.shreyaspatil.capturable.controller/index.html
 $dokka.location:dev.shreyaspatil.capturable.controller//rememberCaptureController/#/PointingToDeclaration/capturable/dev.shreyaspatil.capturable.controller/remember-capture-controller.html
 $dokka.location:dev.shreyaspatil.capturable.controller/CaptureController///PointingToDeclaration/capturable/dev.shreyaspatil.capturable.controller/-capture-controller/index.html
-$dokka.location:dev.shreyaspatil.capturable.controller/CaptureController/CaptureController/#/PointingToDeclaration/capturable/dev.shreyaspatil.capturable.controller/-capture-controller/-capture-controller.html
-$dokka.location:dev.shreyaspatil.capturable.controller/CaptureController/capture/#android.graphics.Bitmap.Config/PointingToDeclaration/capturable/dev.shreyaspatil.capturable.controller/-capture-controller/capture.html
-$dokka.location:dev.shreyaspatil.capturable.controller/CaptureController/captureAsync/#android.graphics.Bitmap.Config/PointingToDeclaration/capturable/dev.shreyaspatil.capturable.controller/-capture-controller/capture-async.html
+$dokka.location:dev.shreyaspatil.capturable.controller/CaptureController/CaptureController/#androidx.compose.ui.graphics.layer.GraphicsLayer/PointingToDeclaration/capturable/dev.shreyaspatil.capturable.controller/-capture-controller/-capture-controller.html
+$dokka.location:dev.shreyaspatil.capturable.controller/CaptureController/captureAsync/#/PointingToDeclaration/capturable/dev.shreyaspatil.capturable.controller/-capture-controller/capture-async.html
 $dokka.location:dev.shreyaspatil.capturable////PointingToDeclaration/capturable/dev.shreyaspatil.capturable/index.html
-$dokka.location:dev.shreyaspatil.capturable//Capturable/#dev.shreyaspatil.capturable.controller.CaptureController#androidx.compose.ui.Modifier#kotlin.Function2[androidx.compose.ui.graphics.ImageBitmap?,kotlin.Throwable?,kotlin.Unit]#kotlin.Function0[kotlin.Unit]/PointingToDeclaration/capturable/dev.shreyaspatil.capturable/-capturable.html
 $dokka.location:dev.shreyaspatil.capturable//capturable/androidx.compose.ui.Modifier#dev.shreyaspatil.capturable.controller.CaptureController/PointingToDeclaration/capturable/dev.shreyaspatil.capturable/capturable.html
 dev.shreyaspatil.capturable
 dev.shreyaspatil.capturable.controller
