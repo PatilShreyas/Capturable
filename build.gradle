@@ -2,7 +2,7 @@
 buildscript {
     ext {
         agpVersion = '8.6.1'
-        kotlinVersion = '2.0.20'
+        kotlinVersion = '2.0.21'
         dokkaVersion = '1.9.20'
         coroutinesVersion = '1.8.1'
         androidCoreVersion = '1.13.1'
