@@ -12,7 +12,7 @@ buildscript {
         mockkVersion = '1.13.13'
         androidJUnitTestVersion = '1.2.1'
         spotlessVersion = '6.25.0'
-        mavenPublishVersion = '0.29.0'
+        mavenPublishVersion = '0.30.0'
     }
     repositories {
         google()
