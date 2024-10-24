@@ -25,15 +25,18 @@
 package dev.shreyaspatil.capturable.controller
 
 import io.mockk.mockk
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.fail
 import org.junit.Test
 
 @Suppress("DeferredResultUnused")
@@ -53,6 +56,25 @@ class CaptureControllerTest {
 
         // Then: Capture request should be get emitted with graphics layer
         assertEquals(captureRequest.imageBitmapDeferred.isActive, true)
+    }
+
+    @Test
+    fun captureRequests_collectedMultipleTimes() = runTest {
+        // Eagerly collect flow and cancel it to make sure we're subscribed to at least once.
+        asyncOnUnconfinedDispatcher { getRecentCaptureRequest() }.cancelAndJoin()
+
+        // When: Flow is collected again
+        asyncOnUnconfinedDispatcher {
+            try {
+                getRecentCaptureRequest()
+            } catch (e: Throwable) {
+                if (e !is CancellationException) {
+                    // Then: Make sure there was no crash
+                    fail(e.message)
+                }
+            }
+            Unit
+        }.cancelAndJoin()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
