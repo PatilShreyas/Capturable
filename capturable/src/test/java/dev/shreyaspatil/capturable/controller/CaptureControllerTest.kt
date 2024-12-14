@@ -28,7 +28,6 @@ import io.mockk.mockk
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
-import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.test.TestScope
@@ -58,12 +57,15 @@ class CaptureControllerTest {
 
     @Test
     fun captureRequests_collectedMultipleTimes() = runTest {
-        // Eagerly collect flow and cancel it to make sure we're subscribed to at least once.
-        asyncOnUnconfinedDispatcher { getRecentCaptureRequest() }.cancelAndJoin()
+        // Given: Eagerly collect flow and cancel it to make sure we're subscribed to at least once.
+        asyncOnUnconfinedDispatcher { getRecentCaptureRequest() }.cancel()
 
-        // When: Flow is collected again
-        asyncOnUnconfinedDispatcher { getRecentCaptureRequest() }.cancelAndJoin()
-        // Then: It should not crash
+        // When: Flow is collected again and capture request is emitted
+        val latestCaptureRequestDeferred = asyncOnUnconfinedDispatcher { getRecentCaptureRequest() }
+        controller.captureAsync()
+
+        // Then: Capture request should be get emitted with graphics layer
+        assertEquals(latestCaptureRequestDeferred.await().imageBitmapDeferred.isActive, true)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
