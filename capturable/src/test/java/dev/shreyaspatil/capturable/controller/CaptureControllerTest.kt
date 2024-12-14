@@ -55,6 +55,19 @@ class CaptureControllerTest {
         assertEquals(captureRequest.imageBitmapDeferred.isActive, true)
     }
 
+    @Test
+    fun captureRequests_collectedMultipleTimes() = runTest {
+        // Given: Eagerly collect flow and cancel it to make sure we're subscribed to at least once.
+        asyncOnUnconfinedDispatcher { getRecentCaptureRequest() }.cancel()
+
+        // When: Flow is collected again and capture request is emitted
+        val latestCaptureRequestDeferred = asyncOnUnconfinedDispatcher { getRecentCaptureRequest() }
+        controller.captureAsync()
+
+        // Then: Capture request should be get emitted with graphics layer
+        assertEquals(latestCaptureRequestDeferred.await().imageBitmapDeferred.isActive, true)
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun <T> TestScope.asyncOnUnconfinedDispatcher(block: suspend CoroutineScope.() -> T) =
         async(UnconfinedTestDispatcher(testScheduler), block = block)
