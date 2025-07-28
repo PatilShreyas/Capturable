@@ -4,7 +4,7 @@ buildscript {
         agpVersion = '8.6.1'
         kotlinVersion = '2.1.0'
         dokkaVersion = '1.9.20'
-        coroutinesVersion = '1.10.0'
+        coroutinesVersion = '1.10.2'
         androidCoreVersion = '1.15.0'
         composeCompilerVersion = '1.5.8'
         composeBomVersion = '2024.10.00'
